@@ -2,25 +2,40 @@
   "name": "stock-analysis",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint --fix ./**/*.js",
-    "start": "node index.js",
-    "start:debug": "node --inspect-brk index.js",
-    "dev": "nodemon index.js",
-    "dev:debug": "nodemon --inspect-brk index.js",
+    "start": "node server/index.js",
+    "start:debug": "node --inspect-brk ./server/index.js",
+    "dev": "nodemon --watch ./client --watch ./server ./server/index.js",
+    "dev:debug": "nodemon --inspect-brk --watch ./client --watch ./server ./server/index.js",
     "test": "test"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/plugin-transform-runtime": "^7.10.3",
+    "@babel/preset-env": "^7.9.6",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-module-resolver": "^4.0.0",
     "eslint": "^7.1.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.10.1",
+    "eslint-import-resolver-babel-module": "^5.1.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.20.0",
     "nodemon": "^2.0.3",
+    "parcel-plugin-clean-dist": "0.0.6",
     "prettier": "^2.0.4"
   },
   "dependencies": {
-    "lodash": "^4.17.15"
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "lodash": "^4.17.15",
+    "parcel-bundler": "^1.12.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hot-loader": "^4.12.21"
   }
 }

@@ -1,0 +1,13 @@
+{
+    "presets": ["@babel/preset-env"],
+    "plugins": [
+      "@babel/plugin-transform-runtime",
+      "react-hot-loader/babel",
+      [
+        "module-resolver",
+        {
+          "root": ["./client/src"]
+        }
+      ]
+    ]
+  }
