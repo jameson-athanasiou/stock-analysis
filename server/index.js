@@ -1,11 +1,11 @@
 const bodyParser = require('body-parser')
 const Bundler = require('parcel-bundler')
 const express = require('express')
-const path = require('path')
+const getMorningstarData = require('./morningstar')
 
 const app = express()
 
-const options = {
+const parcelOptions = {
   outDir: './dist', // The out directory to put the build files in, defaults to dist
   outFile: 'index.html', // The name of the outputFile
   publicUrl: '/', // The url to serve on, defaults to '/'
@@ -29,11 +29,20 @@ const options = {
 
 app.use(bodyParser.json())
 
+app.get('/morningstar', async (req, res) => {
+  const { ticker, fields } = req.query
+  const data = await getMorningstarData(ticker, fields)
+
+  if (data) {
+    res.status(200).send(data)
+  } else res.status(500).send()
+})
+
 app.get('/ticker', (req, res) => {
   res.status(200).send({ hey: 'yes' })
 })
 
-const bundler = new Bundler('./client/index.html', options)
+const bundler = new Bundler('./client/index.html', parcelOptions)
 
 app.use(bundler.middleware())
 

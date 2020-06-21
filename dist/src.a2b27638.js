@@ -30914,13 +30914,9 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 
-var _react = _interopRequireWildcard(require("react"));
+var _react = require("react");
 
 var _axios = _interopRequireDefault(require("axios"));
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -30933,8 +30929,19 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
   return a;
 };
 
-var useGet = function useGet(_ref) {
-  var route = _ref.route;
+var formatUrlParams = function formatUrlParams(params) {
+  return Object.entries(params).reduce(function (acc, _ref, i) {
+    var _ref2 = (0, _slicedToArray2.default)(_ref, 2),
+        key = _ref2[0],
+        value = _ref2[1];
+
+    return "".concat(acc).concat(!i ? '' : '&').concat(key, "=").concat(value);
+  }, '?');
+};
+
+var useGet = function useGet(_ref3) {
+  var params = _ref3.params,
+      route = _ref3.route;
 
   var _useState = (0, _react.useState)(true),
       _useState2 = (0, _slicedToArray2.default)(_useState, 2),
@@ -30953,23 +30960,24 @@ var useGet = function useGet(_ref) {
 
   (0, _react.useEffect)(function () {
     var get = /*#__PURE__*/function () {
-      var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-        var result;
+      var _ref4 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var queryParams, result;
         return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
-                return _axios.default.get("/".concat(route)).catch(function (e) {
+                queryParams = Object.keys(params).length ? formatUrlParams(params) : '';
+                _context.next = 3;
+                return _axios.default.get("/".concat(route).concat(queryParams)).catch(function (e) {
                   return setError(e);
                 });
 
-              case 2:
+              case 3:
                 result = _context.sent;
                 if (result && result.data) setData(result.data);
                 setLoading(false);
 
-              case 5:
+              case 6:
               case "end":
                 return _context.stop();
             }
@@ -30978,7 +30986,7 @@ var useGet = function useGet(_ref) {
       }));
 
       return function get() {
-        return _ref2.apply(this, arguments);
+        return _ref4.apply(this, arguments);
       };
     }();
 
@@ -31004,6 +31012,7 @@ __signature__(useGet, "useState{[loading, setLoading](true)}\nuseState{[error, s
     return;
   }
 
+  reactHotLoader.register(formatUrlParams, "formatUrlParams", "/mnt/f/workspaces/stock-analysis/client/src/hooks/useApi.js");
   reactHotLoader.register(useGet, "useGet", "/mnt/f/workspaces/stock-analysis/client/src/hooks/useApi.js");
 })();
 
@@ -31013,7 +31022,52 @@ __signature__(useGet, "useState{[loading, setLoading](true)}\nuseState{[error, s
   var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
   leaveModule && leaveModule(module);
 })();
-},{"@babel/runtime/regenerator":"../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/slicedToArray":"../node_modules/@babel/runtime/helpers/slicedToArray.js","react":"../node_modules/react/index.js","axios":"../node_modules/axios/index.js"}],"src/components/Application.js":[function(require,module,exports) {
+},{"@babel/runtime/regenerator":"../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/slicedToArray":"../node_modules/@babel/runtime/helpers/slicedToArray.js","react":"../node_modules/react/index.js","axios":"../node_modules/axios/index.js"}],"src/constants.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FIELDS = void 0;
+
+(function () {
+  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
+  enterModule && enterModule(module);
+})();
+
+var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
+  return a;
+};
+
+var FIELDS = {
+  BOOK_VALUE_PER_SHARE: 'Book Value Per Share * USD',
+  DIVIDENDS: 'Dividends USD',
+  EPS: 'Earnings Per Share USD',
+  FREE_CASH_FLOW: 'Free Cash Flow USD Mil',
+  FREE_CASH_FLOW_PER_SHARE: 'Free Cash Flow Per Share * USD',
+  NET_INCOME: 'Net Income USD Mil',
+  REVENUE: 'Revenue USD Mil'
+};
+exports.FIELDS = FIELDS;
+;
+
+(function () {
+  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
+
+  if (!reactHotLoader) {
+    return;
+  }
+
+  reactHotLoader.register(FIELDS, "FIELDS", "/mnt/f/workspaces/stock-analysis/client/src/constants.js");
+})();
+
+;
+
+(function () {
+  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
+  leaveModule && leaveModule(module);
+})();
+},{}],"src/components/Application.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31024,6 +31078,8 @@ exports.default = void 0;
 var _react = _interopRequireDefault(require("react"));
 
 var _useApi = require("../hooks/useApi");
+
+var _constants = require("../constants");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31036,9 +31092,25 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
   return a;
 };
 
+var BOOK_VALUE_PER_SHARE = _constants.FIELDS.BOOK_VALUE_PER_SHARE,
+    DIVIDENDS = _constants.FIELDS.DIVIDENDS,
+    EPS = _constants.FIELDS.EPS,
+    FREE_CASH_FLOW = _constants.FIELDS.FREE_CASH_FLOW,
+    FREE_CASH_FLOW_PER_SHARE = _constants.FIELDS.FREE_CASH_FLOW_PER_SHARE,
+    NET_INCOME = _constants.FIELDS.NET_INCOME,
+    REVENUE = _constants.FIELDS.REVENUE;
+
 var App = function App() {
+  var fields = [BOOK_VALUE_PER_SHARE, DIVIDENDS, EPS, FREE_CASH_FLOW, FREE_CASH_FLOW_PER_SHARE, NET_INCOME, REVENUE].reduce(function (acc, curr) {
+    return "".concat(acc, ",").concat(curr);
+  });
+
   var _useGet = (0, _useApi.useGet)({
-    route: 'ticker'
+    route: 'morningstar',
+    params: {
+      ticker: 'MSFT',
+      fields: fields
+    }
   }),
       data = _useGet.data,
       loading = _useGet.loading,
@@ -31066,6 +31138,13 @@ exports.default = _default2;
     return;
   }
 
+  reactHotLoader.register(BOOK_VALUE_PER_SHARE, "BOOK_VALUE_PER_SHARE", "/mnt/f/workspaces/stock-analysis/client/src/components/Application.js");
+  reactHotLoader.register(DIVIDENDS, "DIVIDENDS", "/mnt/f/workspaces/stock-analysis/client/src/components/Application.js");
+  reactHotLoader.register(EPS, "EPS", "/mnt/f/workspaces/stock-analysis/client/src/components/Application.js");
+  reactHotLoader.register(FREE_CASH_FLOW, "FREE_CASH_FLOW", "/mnt/f/workspaces/stock-analysis/client/src/components/Application.js");
+  reactHotLoader.register(FREE_CASH_FLOW_PER_SHARE, "FREE_CASH_FLOW_PER_SHARE", "/mnt/f/workspaces/stock-analysis/client/src/components/Application.js");
+  reactHotLoader.register(NET_INCOME, "NET_INCOME", "/mnt/f/workspaces/stock-analysis/client/src/components/Application.js");
+  reactHotLoader.register(REVENUE, "REVENUE", "/mnt/f/workspaces/stock-analysis/client/src/components/Application.js");
   reactHotLoader.register(App, "App", "/mnt/f/workspaces/stock-analysis/client/src/components/Application.js");
   reactHotLoader.register(_default, "default", "/mnt/f/workspaces/stock-analysis/client/src/components/Application.js");
 })();
@@ -31076,7 +31155,7 @@ exports.default = _default2;
   var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
   leaveModule && leaveModule(module);
 })();
-},{"react":"../node_modules/react/index.js","../hooks/useApi":"src/hooks/useApi.js"}],"src/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../hooks/useApi":"src/hooks/useApi.js","../constants":"src/constants.js"}],"src/index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -31120,7 +31199,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52037" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51100" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
