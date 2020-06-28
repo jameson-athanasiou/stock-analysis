@@ -1,6 +1,7 @@
 import React from 'react'
 import { useGet } from 'hooks/useApi'
 import { FIELDS } from 'constants'
+import Summary from 'components/Summary'
 
 const { BOOK_VALUE_PER_SHARE, DIVIDENDS, EPS, FREE_CASH_FLOW, FREE_CASH_FLOW_PER_SHARE, NET_INCOME, REVENUE } = FIELDS
 
@@ -22,12 +23,16 @@ const App = () => {
     },
   })
 
-  if (loading) return <div>loading...</div>
+  // if (loading) return <div>loading...</div>
   if (error) return <div>{error}</div>
 
   console.log(data)
 
-  return <div>hello world</div>
+  return (
+    <div className="App">
+      <Summary data={data} loading={loading} />
+    </div>
+  )
 }
 
 export default App

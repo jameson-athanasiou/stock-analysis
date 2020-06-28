@@ -9,7 +9,8 @@ const formatCsvOutput = (data, fields) => {
   const years = yearsRow.filter((val) => val).map((val) => val.substring(0, 4))
 
   valuesRows
-    .filter(([title]) => title && (fields.length > 0 ? fields.includes(title) : !badTitles.includes(title)))
+    .filter(([title]) => title && fields.length > 0 && fields.includes(title))
+    .filter(([title]) => !badTitles.includes(title))
     .forEach(([title, ...values]) => {
       result[title] = values.reduce(
         (acc, curr, i) => ({

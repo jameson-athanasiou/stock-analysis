@@ -29,12 +29,14 @@
     "prettier": "^2.0.4"
   },
   "dependencies": {
+    "antd": "^4.3.5",
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "csv-parse": "^4.10.1",
     "express": "^4.17.1",
     "lodash": "^4.17.15",
     "parcel-bundler": "^1.12.4",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21"
