@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 
 const Summary = ({ data, loading }) => {
-  console.log(data)
-
   const dataSource = Object.entries(data).map(([key, value], i) => {
     const ttm = value.TTM
     const formattedTTM = ttm ? ttm.toString().replace(/(?<=\d)(?=(\d\d\d)+(?!\d))/, ',') : '--'
