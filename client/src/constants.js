@@ -5,5 +5,6 @@ export const FIELDS = {
   FREE_CASH_FLOW: 'Free Cash Flow USD Mil',
   FREE_CASH_FLOW_PER_SHARE: 'Free Cash Flow Per Share * USD',
   NET_INCOME: 'Net Income USD Mil',
+  OPERATING_CASH_FLOW: 'Operating Cash Flow USD Mil',
   REVENUE: 'Revenue USD Mil',
 }

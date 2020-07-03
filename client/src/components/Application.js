@@ -8,20 +8,21 @@ import { FIELDS } from 'constants'
 import Summary from 'routes/Summary'
 import Trends from 'routes/Trends'
 
-const { Header, Content, Footer, Sider } = Layout
+const { Content, Sider } = Layout
 
-const { BOOK_VALUE_PER_SHARE, DIVIDENDS, EPS, FREE_CASH_FLOW, FREE_CASH_FLOW_PER_SHARE, NET_INCOME, REVENUE } = FIELDS
+const fieldsToSelect = [
+  'BOOK_VALUE_PER_SHARE',
+  'DIVIDENDS',
+  'EPS',
+  'FREE_CASH_FLOW',
+  'FREE_CASH_FLOW_PER_SHARE',
+  'NET_INCOME',
+  'OPERATING_CASH_FLOW',
+  'REVENUE',
+]
 
 const App = () => {
-  const fields = [
-    BOOK_VALUE_PER_SHARE,
-    DIVIDENDS,
-    EPS,
-    FREE_CASH_FLOW,
-    FREE_CASH_FLOW_PER_SHARE,
-    NET_INCOME,
-    REVENUE,
-  ].reduce((acc, curr) => `${acc},${curr}`)
+  const fields = fieldsToSelect.reduce((acc, curr) => `${acc},${FIELDS[curr]}`)
   const { data, loading, error } = useGet({
     route: 'morningstar',
     params: {
@@ -65,7 +66,7 @@ const App = () => {
               ))}
             </Breadcrumb>
             <Summary data={data} loading={loading} />
-            <Trends />
+            <Trends data={data} loading={loading} />
           </Content>
         </Layout>
       </Layout>
