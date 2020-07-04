@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react'
-import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import PropTypes from 'prop-types'
 import { FIELDS } from 'constants'
+import Chart from 'components/Chart'
 
 const { FREE_CASH_FLOW, NET_INCOME, OPERATING_CASH_FLOW, REVENUE } = FIELDS
-
-const colors = ['3c78d8', 'a61c00', '6aa84f', 'a64d79', 'e69138', '45818e']
 
 const Trends = ({ data, loading }) => {
   console.log(data)
@@ -28,22 +27,7 @@ const Trends = ({ data, loading }) => {
 
   console.log(chartData)
 
-  return (
-    <ResponsiveContainer height={500}>
-      <LineChart data={chartData}>
-        <CartesianGrid stroke="#f5f5f5" fill="#e6e6e6" />
-        <Legend />
-        {dataPoints.map((item, index) => (
-          <Line key={item} type="monotone" dataKey={item} stroke={`#${colors[index]}`} />
-        ))}
-        <Tooltip trigger="click" />
-        <XAxis dataKey="year" height={40}>
-          <Label position="insideBottom" />
-        </XAxis>
-        <YAxis />
-      </LineChart>
-    </ResponsiveContainer>
-  )
+  return <Chart data={chartData} dataPoints={dataPoints} />
 }
 
 export default Trends
