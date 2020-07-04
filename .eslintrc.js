@@ -1,5 +1,6 @@
 module.exports = {
-  extends: ['airbnb/base', 'prettier'],
+  extends: ['airbnb/base', 'prettier', 'plugin:react/recommended'],
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2020,
     ecmaFeatures: {
@@ -15,6 +16,8 @@ module.exports = {
     jest: true,
   },
   rules: {
+    'react/jsx-uses-react': 'error',
+    'react/jsx-uses-vars': 'error',
     indent: ['error', 2],
     'no-debugger': 0,
     'no-alert': 0,
@@ -88,6 +91,9 @@ module.exports = {
   settings: {
     'import/resolver': {
       'babel-module': {},
+    },
+    react: {
+      version: 'detect',
     },
   },
 }
