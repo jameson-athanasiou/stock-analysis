@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { capitalize } from 'lodash'
 import { Layout, Menu, Breadcrumb, PageHeader } from 'antd'
-import { LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
 import { useGet } from 'hooks/useApi'
 import { FIELDS } from 'constants'
+import Home from 'routes/Home'
 import Summary from 'routes/Summary'
 import Trends from 'routes/Trends'
 
@@ -36,13 +37,20 @@ const App = () => {
   const [sector, setSector] = useState('Something software')
   const [collapsed, setCollapsed] = useState(true)
 
+  const handleTickerUpdate = (selectedTicker) => setTicker(selectedTicker)
+
   if (error) return <div>{error}</div>
 
   const breadcrumbs = location
     .split('/')
-    .filter((item) => item)
-    .filter((_, index) => index)
+    .filter((item) => item.toUpperCase() !== ticker.toUpperCase())
     .map((item) => capitalize(item))
+    .map((item) => item || 'Home')
+    .filter((item, index) => !(item === 'Home' && index))
+
+  console.log({ breadcrumbs })
+
+  console.log({ showBack: breadcrumbs.length > 1 })
 
   return (
     <div className="App">
@@ -58,13 +66,20 @@ const App = () => {
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <PageHeader className="site-page-header" onBack={() => null} title={ticker} subTitle={sector} />
+          <PageHeader
+            className="site-page-header"
+            title={ticker}
+            subTitle={sector}
+            backIcon={breadcrumbs.length > 1 ? <ArrowLeftOutlined /> : null}
+            onBack={() => setLocation('/')}
+          />
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
               {breadcrumbs.map((item) => (
                 <Breadcrumb.Item key={item}>{item}</Breadcrumb.Item>
               ))}
             </Breadcrumb>
+            <Home handleTickerUpdate={handleTickerUpdate} />
             <Summary data={data} loading={loading} />
             <Trends data={data} loading={loading} />
           </Content>

@@ -41,6 +41,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21",
+    "react-transition-group": "^4.4.1",
     "readdirp": "^3.4.0",
     "recharts": "^1.8.5",
     "wouter": "^2.4.0"
