@@ -1,6 +1,9 @@
 const bodyParser = require('body-parser')
 const Bundler = require('parcel-bundler')
+const fs = require('fs')
 const express = require('express')
+const fileUpload = require('express-fileupload')
+const { capitalize } = require('lodash')
 const getMorningstarData = require('./morningstar')
 
 const app = express()
@@ -28,6 +31,7 @@ const parcelOptions = {
 }
 
 app.use(bodyParser.json())
+app.use(fileUpload())
 
 app.get('/morningstar', async (req, res) => {
   const { ticker, fields } = req.query
@@ -40,6 +44,24 @@ app.get('/morningstar', async (req, res) => {
 
 app.get('/ticker', (req, res) => {
   res.status(200).send({ hey: 'yes' })
+})
+
+app.post('/add', (req, res) => {
+  if (!req.files) res.status(400).send({ message: 'no file uploaded' })
+
+  const { industry, sector, ticker } = req.body
+  const filePath = `${process.cwd()}/data/exports/${capitalize(sector)}/${capitalize(industry)}/`
+  const fileName = `${ticker.toUpperCase()}.csv`
+  const { file } = req.files
+
+  if (!fs.existsSync(filePath)) {
+    fs.mkdirSync(filePath, { recursive: true })
+  }
+
+  file.mv(`${filePath}/${fileName}`, (err) => {
+    if (err) res.status(500).send(err)
+    res.status(204).send()
+  })
 })
 
 const bundler = new Bundler('./client/index.html', parcelOptions)

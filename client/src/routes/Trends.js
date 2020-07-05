@@ -3,8 +3,7 @@ import { useRoute } from 'wouter'
 import Trends from 'components/Trends'
 
 const TrendsRoute = (props) => {
-  const [match, params] = useRoute('/:ticker/trends')
-  console.log({ match, params })
+  const [match] = useRoute('/:ticker/trends')
   return match ? <Trends {...props} /> : null
 }
 

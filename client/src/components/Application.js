@@ -33,7 +33,7 @@ const App = () => {
   })
 
   const [location, setLocation] = useLocation()
-  const [ticker, setTicker] = useState('MSFT')
+  const [ticker, setTicker] = useState('')
   const [sector, setSector] = useState('Something software')
   const [collapsed, setCollapsed] = useState(true)
 
@@ -47,10 +47,6 @@ const App = () => {
     .map((item) => capitalize(item))
     .map((item) => item || 'Home')
     .filter((item, index) => !(item === 'Home' && index))
-
-  console.log({ breadcrumbs })
-
-  console.log({ showBack: breadcrumbs.length > 1 })
 
   return (
     <div className="App">
