@@ -4,7 +4,7 @@ import axios from 'axios'
 const formatUrlParams = (params) =>
   Object.entries(params).reduce((acc, [key, value], i) => `${acc}${!i ? '' : '&'}${key}=${value}`, '?')
 
-export const useGet = ({ params, route }) => {
+export const useGet = (route, params = {}) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState()
   const [data, setData] = useState()

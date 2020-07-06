@@ -4,8 +4,7 @@ import { Button, Form, Input, Select, Typography, Upload } from 'antd'
 import { LineChartOutlined, ProfileOutlined, UploadOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
 import { Transition } from 'react-transition-group'
-import { usePost } from 'hooks/useApi'
-import UploadData from 'components/UploadData'
+import { useGet, usePost } from 'hooks/useApi'
 
 const { Option } = Select
 const { Title } = Typography
@@ -14,20 +13,20 @@ const onFinishFailed = (errorInfo) => {
   console.log('Failed:', errorInfo)
 }
 
-const tickers = [
-  {
-    name: 'Waste Management',
-    symbol: 'WM',
-  },
-  {
-    name: 'Sysco',
-    symbol: 'SYY',
-  },
-  {
-    name: 'Microsoft',
-    symbol: 'MSFT',
-  },
-]
+// const tickers = [
+//   {
+//     name: 'Waste Management',
+//     symbol: 'WM',
+//   },
+//   {
+//     name: 'Sysco',
+//     symbol: 'SYY',
+//   },
+//   {
+//     name: 'Microsoft',
+//     symbol: 'MSFT',
+//   },
+// ]
 
 const transitionStyles = {
   entering: { opacity: 1 },
@@ -45,33 +44,13 @@ const layout = {
   },
 }
 
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 16,
-  },
-}
-
 const Home = ({ handleTickerUpdate }) => {
   const [, setLocation] = useLocation()
-  const [ticker, setTicker] = useState('other')
+  const [ticker, setTicker] = useState()
   const [uploadInfo, setUploadInfo] = useState({})
+  const { data: availableTickers, loading } = useGet('availableTickers')
+  console.log(availableTickers)
   const [upload] = usePost('add')
-  const tickersToDisplay = useMemo(
-    () =>
-      tickers.sort((a, b) => {
-        if (a.symbol < b.symbol) {
-          return -1
-        }
-        if (a.symbol > b.symbol) {
-          return 1
-        }
-        return 0
-      }),
-    []
-  )
-
-  const handleUpload = () => {}
 
   const onFinish = (values) => {
     console.log('Success:', values)
@@ -80,6 +59,8 @@ const Home = ({ handleTickerUpdate }) => {
     formData.append('file', uploadInfo.file)
     upload(formData)
   }
+
+  if (loading) return null
 
   return (
     <>
@@ -96,9 +77,9 @@ const Home = ({ handleTickerUpdate }) => {
           }
         }}
       >
-        {tickersToDisplay.map(({ name, symbol }) => (
-          <Option key={symbol} value={symbol}>
-            {name} ({symbol})
+        {availableTickers.fullNames.map((name) => (
+          <Option key={name} value={name}>
+            {name}
           </Option>
         ))}
         <Option key="other" value="other">

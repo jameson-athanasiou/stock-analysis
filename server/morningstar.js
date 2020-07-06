@@ -43,7 +43,7 @@ const parse = async (ticker, fields) => {
   if (!ticker) throw new Error('Ticker is required')
   const files = await readdirp.promise('.', {
     directoryFilter: ['!client', '!.git', '!node_modules'],
-    fileFilter: `${ticker}.csv`,
+    fileFilter: `*${ticker}.csv`,
   })
   const file = files[0]?.path
   if (!file) throw new Error('File not found')

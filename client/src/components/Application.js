@@ -24,18 +24,15 @@ const fieldsToSelect = [
 
 const App = () => {
   const fields = fieldsToSelect.reduce((acc, curr) => `${acc},${FIELDS[curr]}`)
-  const { data, loading, error } = useGet({
-    route: 'morningstar',
-    params: {
-      ticker: 'MSFT',
-      fields,
-    },
-  })
 
   const [location, setLocation] = useLocation()
   const [ticker, setTicker] = useState('')
   const [sector, setSector] = useState('Something software')
   const [collapsed, setCollapsed] = useState(true)
+  const { data, loading, error } = useGet('morningstar', {
+    ticker,
+    fields,
+  })
 
   const handleTickerUpdate = (selectedTicker) => setTicker(selectedTicker)
 
