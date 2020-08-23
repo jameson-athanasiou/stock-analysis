@@ -9,6 +9,8 @@ const getMorningstarData = require('./morningstar')
 
 const app = express()
 
+const isProd = process.env.NODE_ENV === 'production'
+
 const parcelOptions = {
   outDir: './dist', // The out directory to put the build files in, defaults to dist
   outFile: 'index.html', // The name of the outputFile
@@ -18,8 +20,8 @@ const parcelOptions = {
   cacheDir: '.cache', // The directory cache gets put in, defaults to .cache
   contentHash: false, // Disable content hash from being included on the filename
   global: 'client', // Expose modules as UMD under this name, disabled by default
-  minify: process.env.NODE_ENV === 'production', // Minify files, enabled if process.env.NODE_ENV === 'production'
-  scopeHoist: false, // Turn on experimental scope hoisting/tree shaking flag, for smaller production bundles
+  minify: isProd, // Minify files, enabled if process.env.NODE_ENV === 'production'
+  scopeHoist: isProd, // Turn on experimental scope hoisting/tree shaking flag, for smaller production bundles
   target: 'browser', // Browser/node/electron, defaults to browser
   bundleNodeModules: true, // By default, package.json dependencies are not included when using 'node' or 'electron' with 'target' option above. Set to true to adds them to the bundle, false by default
   logLevel: 4, // 5 = save everything to a file, 4 = like 3, but with timestamps and additionally log http requests to dev server, 3 = log info, warnings & errors, 2 = log warnings & errors, 1 = log errors, 0 = log nothing

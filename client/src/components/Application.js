@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { capitalize } from 'lodash'
 import { Layout, Menu, Breadcrumb, PageHeader } from 'antd'
 import { ArrowLeftOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
-import { useGet } from 'hooks/useApi'
+import { useLazyGet } from 'hooks/useApi'
 import { FIELDS } from 'constants'
 import Home from 'routes/Home'
 import Summary from 'routes/Summary'
@@ -28,15 +28,18 @@ const App = () => {
   const [location, setLocation] = useLocation()
   const [ticker, setTicker] = useState('')
   const [sector, setSector] = useState('Something software')
+  const [tickerData, setTickerData] = useState({})
   const [collapsed, setCollapsed] = useState(true)
-  const { data, loading, error } = useGet('morningstar', {
-    ticker,
-    fields,
-  })
+  const { getTickerData, loading, error } = useLazyGet('morningstar')
+
+  useCallback(() => {
+    debugger
+    getTickerData({ ticker, fields }).then((result) => {
+      setTickerData(result)
+    })
+  }, [ticker])
 
   const handleTickerUpdate = (selectedTicker) => setTicker(selectedTicker)
-
-  if (error) return <div>{error}</div>
 
   const breadcrumbs = location
     .split('/')
@@ -73,8 +76,8 @@ const App = () => {
               ))}
             </Breadcrumb>
             <Home handleTickerUpdate={handleTickerUpdate} />
-            <Summary data={data} loading={loading} />
-            <Trends data={data} loading={loading} />
+            <Summary data={tickerData} loading={loading} />
+            <Trends data={tickerData} loading={loading} />
           </Content>
         </Layout>
       </Layout>
