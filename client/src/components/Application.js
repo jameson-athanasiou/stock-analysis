@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { capitalize } from 'lodash'
 import { Layout, Menu, Breadcrumb, PageHeader } from 'antd'
 import { ArrowLeftOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
-import { useGet } from 'hooks/useApi'
+import { useLazyGet } from 'hooks/useApi'
 import { FIELDS } from 'constants'
 import Home from 'routes/Home'
 import Summary from 'routes/Summary'
@@ -24,22 +24,21 @@ const fieldsToSelect = [
 
 const App = () => {
   const fields = fieldsToSelect.reduce((acc, curr) => `${acc},${FIELDS[curr]}`)
-  const { data, loading, error } = useGet({
-    route: 'morningstar',
-    params: {
-      ticker: 'MSFT',
-      fields,
-    },
-  })
 
   const [location, setLocation] = useLocation()
-  const [ticker, setTicker] = useState('MSFT')
+  const [ticker, setTicker] = useState('')
   const [sector, setSector] = useState('Something software')
+  const [tickerData, setTickerData] = useState({})
   const [collapsed, setCollapsed] = useState(true)
+  const [getTickerData, { loading, error }] = useLazyGet('morningstar')
+
+  useEffect(() => {
+    getTickerData({ ticker, fields }).then((result) => {
+      setTickerData(result)
+    })
+  }, [ticker])
 
   const handleTickerUpdate = (selectedTicker) => setTicker(selectedTicker)
-
-  if (error) return <div>{error}</div>
 
   const breadcrumbs = location
     .split('/')
@@ -47,10 +46,6 @@ const App = () => {
     .map((item) => capitalize(item))
     .map((item) => item || 'Home')
     .filter((item, index) => !(item === 'Home' && index))
-
-  console.log({ breadcrumbs })
-
-  console.log({ showBack: breadcrumbs.length > 1 })
 
   return (
     <div className="App">
@@ -80,8 +75,8 @@ const App = () => {
               ))}
             </Breadcrumb>
             <Home handleTickerUpdate={handleTickerUpdate} />
-            <Summary data={data} loading={loading} />
-            <Trends data={data} loading={loading} />
+            <Summary data={tickerData} loading={loading} />
+            <Trends data={tickerData} loading={loading} />
           </Content>
         </Layout>
       </Layout>

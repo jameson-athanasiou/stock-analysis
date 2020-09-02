@@ -1,27 +1,32 @@
-import React, { useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Select, Typography } from 'antd'
-import { LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
+import { Button, Form, Input, Select, Typography, Upload } from 'antd'
+import { LineChartOutlined, ProfileOutlined, UploadOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
 import { Transition } from 'react-transition-group'
+import { useGet, usePost } from 'hooks/useApi'
 
 const { Option } = Select
 const { Title } = Typography
 
-const tickers = [
-  {
-    name: 'Waste Management',
-    symbol: 'WM',
-  },
-  {
-    name: 'Sysco',
-    symbol: 'SYY',
-  },
-  {
-    name: 'Microsoft',
-    symbol: 'MSFT',
-  },
-]
+const onFinishFailed = (errorInfo) => {
+  console.log('Failed:', errorInfo)
+}
+
+// const tickers = [
+//   {
+//     name: 'Waste Management',
+//     symbol: 'WM',
+//   },
+//   {
+//     name: 'Sysco',
+//     symbol: 'SYY',
+//   },
+//   {
+//     name: 'Microsoft',
+//     symbol: 'MSFT',
+//   },
+// ]
 
 const transitionStyles = {
   entering: { opacity: 1 },
@@ -30,9 +35,32 @@ const transitionStyles = {
   exited: { opacity: 0 },
 }
 
+const layout = {
+  labelCol: {
+    span: 4,
+  },
+  wrapperCol: {
+    span: 16,
+  },
+}
+
 const Home = ({ handleTickerUpdate }) => {
-  const [location, setLocation] = useLocation()
-  const [ticker, setTicker] = useState(null)
+  const [, setLocation] = useLocation()
+  const [ticker, setTicker] = useState()
+  const [uploadInfo, setUploadInfo] = useState({})
+  const { data: availableTickers, loading } = useGet('availableTickers')
+  console.log(availableTickers)
+  const [upload] = usePost('add')
+
+  const onFinish = (values) => {
+    console.log('Success:', values)
+    const formData = new FormData()
+    Object.entries(values).forEach(([field, value]) => formData.append(field, value))
+    formData.append('file', uploadInfo.file)
+    upload(formData)
+  }
+
+  if (loading) return null
 
   return (
     <>
@@ -44,20 +72,21 @@ const Home = ({ handleTickerUpdate }) => {
         optionFilterProp="children"
         onChange={(selectedTicker) => {
           setTicker(selectedTicker)
-          handleTickerUpdate(selectedTicker)
+          if (selectedTicker !== 'other') {
+            handleTickerUpdate(selectedTicker)
+          }
         }}
-        // onFocus={onFocus}
-        // onBlur={onBlur}
-        // onSearch={onSearch}
-        // filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
       >
-        {tickers.map(({ name, symbol }) => (
-          <Option key={symbol} value={symbol}>
-            {name} ({symbol})
+        {availableTickers.fullNames.map((name) => (
+          <Option key={name} value={name}>
+            {name}
           </Option>
         ))}
+        <Option key="other" value="other">
+          {"The company I want isn't here! (Other)"}
+        </Option>
       </Select>
-      {ticker ? (
+      {ticker && ticker !== 'other' ? (
         <Transition appear in={!!ticker} timeout={1000}>
           {(state) => (
             <div
@@ -85,6 +114,55 @@ const Home = ({ handleTickerUpdate }) => {
             </div>
           )}
         </Transition>
+      ) : null}
+      {ticker === 'other' ? (
+        <>
+          <Title style={{ marginTop: '50px' }} level={3}>
+            {"Let's add a company!"}
+          </Title>
+          <Form name="New Ticker" {...layout} onFinish={onFinish} onFinishFailed={onFinishFailed}>
+            {[
+              ['Ticker', 'ticker'],
+              ['Name', 'name'],
+              ['Sector', 'sector'],
+              ['Industry', 'industry'],
+            ].map(([displayName, fieldName]) => (
+              <Fragment key={displayName}>
+                <Form.Item
+                  label={displayName}
+                  name={fieldName}
+                  rules={[{ required: true, message: `${displayName} is required.` }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Fragment>
+            ))}
+            <Form.Item
+              name="upload"
+              label="Upload"
+              valuePropName="file"
+              rules={[{ required: true, message: 'You must pick a file.' }]}
+            >
+              <Upload
+                action="/add"
+                name="file"
+                beforeUpload={(file) => {
+                  setUploadInfo((prev) => ({ ...prev, file }))
+                  return false
+                }}
+              >
+                <Button>
+                  <UploadOutlined /> Pick a file
+                </Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" style={{ marginTop: 16 }} htmlType="submit">
+                {'Start Upload'}
+              </Button>
+            </Form.Item>
+          </Form>
+        </>
       ) : null}
     </>
   )

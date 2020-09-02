@@ -4,7 +4,7 @@ import axios from 'axios'
 const formatUrlParams = (params) =>
   Object.entries(params).reduce((acc, [key, value], i) => `${acc}${!i ? '' : '&'}${key}=${value}`, '?')
 
-export const useGet = ({ params, route }) => {
+export const useGet = (route, params = {}) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState()
   const [data, setData] = useState()
@@ -20,4 +20,31 @@ export const useGet = ({ params, route }) => {
   }, [])
 
   return { data, error, loading }
+}
+
+export const usePost = (route) => {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState()
+
+  const post = async (postData) => {
+    const result = axios.post(`/${route}`, postData).catch((e) => setError(e))
+    setLoading(false)
+    return result
+  }
+
+  return [post, error, loading]
+}
+
+export const useLazyGet = (route) => {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState()
+
+  const get = async (params = {}) => {
+    const queryParams = Object.keys(params).length ? formatUrlParams(params) : ''
+    const result = await axios.get(`/${route}${queryParams}`).catch((e) => setError(e))
+    setLoading(false)
+    return result
+  }
+
+  return [get, { error, loading }]
 }
