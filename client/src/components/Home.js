@@ -77,8 +77,8 @@ const Home = ({ handleTickerUpdate }) => {
           }
         }}
       >
-        {availableTickers.fullNames.map((name) => (
-          <Option key={name} value={name}>
+        {availableTickers.fullNames.map((name, index) => (
+          <Option key={name} value={availableTickers.tickers[index]}>
             {name}
           </Option>
         ))}

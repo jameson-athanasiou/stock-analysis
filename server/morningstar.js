@@ -1,6 +1,7 @@
 const parseCsv = require('csv-parse')
 const fs = require('fs').promises
 const readdirp = require('readdirp')
+const { buildError } = require('./util/error')
 
 const badTitles = ['Other', 'Revenue']
 
@@ -40,13 +41,19 @@ const handleParse = (file) =>
   })
 
 const parse = async (ticker, fields) => {
-  if (!ticker) throw new Error('Ticker is required')
+  if (!ticker) {
+    const error = buildError('Ticker is required', 'TICKER_MISSING')
+    throw error
+  }
   const files = await readdirp.promise('.', {
     directoryFilter: ['!client', '!.git', '!node_modules'],
     fileFilter: `*${ticker}.csv`,
   })
   const file = files[0]?.path
-  if (!file) throw new Error('File not found')
+  if (!file) {
+    const error = buildError('File not found', 'FILE_NOT_FOUND')
+    throw error
+  }
 
   const content = await fs.readFile(file, 'utf-8')
   const output = await handleParse(content)

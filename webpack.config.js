@@ -1,7 +1,13 @@
 const path = require('path')
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 module.exports = {
+  devServer: {
+    hot: true,
+    writeToDisk: true,
+  },
   devtool: 'eval-source-map',
   entry: './client/src/index.js',
   mode: 'development',
@@ -16,19 +22,25 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: { babelrc: true },
+          options: {
+            babelrc: true,
+            plugins: [require.resolve('react-refresh/babel')],
+          },
         },
       },
     ],
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './client/index.html',
     }),
+    new webpack.HotModuleReplacementPlugin(),
+    new ReactRefreshWebpackPlugin(),
   ],
   stats: {
     colors: true,
