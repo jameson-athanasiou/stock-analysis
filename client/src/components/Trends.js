@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
+import { isEmpty } from 'lodash'
 import { FIELDS } from 'constants'
 import Chart from 'components/Chart'
 
@@ -7,8 +8,7 @@ const { FREE_CASH_FLOW, NET_INCOME, OPERATING_CASH_FLOW, REVENUE } = FIELDS
 
 const Trends = ({ data, loading }) => {
   console.log(data)
-
-  if (loading) return null
+  if (loading || isEmpty(data)) return null
 
   const dataPoints = [FREE_CASH_FLOW, NET_INCOME, REVENUE, OPERATING_CASH_FLOW]
   const chartData = useMemo(

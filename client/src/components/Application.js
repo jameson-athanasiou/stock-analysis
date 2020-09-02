@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { capitalize } from 'lodash'
 import { Layout, Menu, Breadcrumb, PageHeader } from 'antd'
 import { ArrowLeftOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
@@ -30,10 +30,9 @@ const App = () => {
   const [sector, setSector] = useState('Something software')
   const [tickerData, setTickerData] = useState({})
   const [collapsed, setCollapsed] = useState(true)
-  const { getTickerData, loading, error } = useLazyGet('morningstar')
+  const [getTickerData, { loading, error }] = useLazyGet('morningstar')
 
-  useCallback(() => {
-    debugger
+  useEffect(() => {
     getTickerData({ ticker, fields }).then((result) => {
       setTickerData(result)
     })

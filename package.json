@@ -15,8 +15,10 @@
     "@babel/core": "^7.9.6",
     "@babel/plugin-transform-runtime": "^7.10.3",
     "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.10.4",
     "babel-eslint": "^10.1.0",
     "babel-plugin-module-resolver": "^4.0.0",
+    "css-loader": "^4.2.2",
     "eslint": "^7.1.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.10.1",
@@ -24,20 +26,21 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.20.0",
+    "html-webpack-plugin": "^4.4.1",
     "nodemon": "^2.0.3",
-    "parcel-plugin-clean-dist": "0.0.6",
-    "prettier": "^2.0.4"
+    "prettier": "^2.0.4",
+    "style-loader": "^1.2.1"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "antd": "^4.3.5",
     "axios": "^0.19.2",
+    "babel-loader": "^8.1.0",
     "body-parser": "^1.19.0",
     "csv-parse": "^4.10.1",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.7-alpha.3",
-    "lodash": "^4.17.15",
-    "parcel-bundler": "^1.12.4",
+    "lodash": "^4.17.19",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -45,6 +48,8 @@
     "react-transition-group": "^4.4.1",
     "readdirp": "^3.4.0",
     "recharts": "^1.8.5",
+    "webpack": "^4.44.1",
+    "webpack-dev-middleware": "^3.7.2",
     "wouter": "^2.4.0"
   }
 }

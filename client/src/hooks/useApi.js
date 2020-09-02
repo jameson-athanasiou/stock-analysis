@@ -46,5 +46,5 @@ export const useLazyGet = (route) => {
     return result
   }
 
-  return [get, error, loading]
+  return [get, { error, loading }]
 }
