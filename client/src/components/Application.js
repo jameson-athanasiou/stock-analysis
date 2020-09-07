@@ -4,7 +4,7 @@ import { Layout, Menu, Breadcrumb, PageHeader } from 'antd'
 import { ArrowLeftOutlined, DollarOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
 import { useLazyGet } from 'hooks/useApi'
-import { FIELDS } from 'constants'
+import { REMOTE_FIELDS } from 'constants'
 import Home from 'routes/Home'
 import Financials from 'routes/Financials'
 import Summary from 'routes/Summary'
@@ -25,18 +25,25 @@ const fieldsToSelect = [
 ]
 
 const App = () => {
-  const fields = fieldsToSelect.reduce((acc, curr) => `${acc},${FIELDS[curr]}`)
+  const fields = fieldsToSelect.reduce((acc, curr) => `${acc},${REMOTE_FIELDS[curr]}`)
 
   const [location, setLocation] = useLocation()
   const [ticker, setTicker] = useState(getTickerFromLocation(location) || '')
-  const [sector, setSector] = useState('Something software')
+  const [sector, setSector] = useState('')
   const [tickerData, setTickerData] = useState({})
   const [collapsed, setCollapsed] = useState(true)
   const [getTickerData, { loading, error }] = useLazyGet('morningstar')
 
   useEffect(() => {
     getTickerData({ ticker, fields }).then((result) => {
-      setTickerData(result)
+      const formattedResults = Object.entries(result).reduce((acc, [metric, data]) => {
+        const [formattedMetric] = metric.replace(/\*/g, '').split('USD')
+        return {
+          ...acc,
+          [formattedMetric.trim()]: data,
+        }
+      }, {})
+      setTickerData(formattedResults)
     })
   }, [ticker])
 
