@@ -7,6 +7,7 @@ const { startCase } = require('lodash')
 const readdirp = require('readdirp')
 const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
+const hotMiddleware = require('webpack-dev-middleware')
 const webpackConfig = require('../webpack.config.js')
 const getMorningstarData = require('./morningstar')
 
@@ -78,12 +79,19 @@ app.post('/add', (req, res) => {
 const compiler = webpack(webpackConfig)
 app.use(
   webpackMiddleware(compiler, {
+    publicPath: webpackConfig.output.publicPath,
     writeToDisk: true,
   })
 )
 
+// app.use(
+//   hotMiddleware(compiler, {
+//     path: `/__webpack_hmr`,
+//     heartbeat: 10 * 1000,
+//   })
+// )
+
 app.get('*', (req, res) => {
-  console.log(__dirname)
   res.sendFile(path.resolve(__dirname, '../dist/index.html'))
 })
 

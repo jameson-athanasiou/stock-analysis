@@ -10,8 +10,6 @@ const Trends = ({ data, loading }) => {
   console.log(data)
   if (loading || isEmpty(data)) return null
 
-  debugger
-
   const dataPoints = [FREE_CASH_FLOW, NET_INCOME, REVENUE, OPERATING_CASH_FLOW]
   const chartData = useMemo(
     () =>

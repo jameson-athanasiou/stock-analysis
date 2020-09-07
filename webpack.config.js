@@ -5,11 +5,12 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 
 module.exports = {
   devServer: {
+    inline: true,
     hot: true,
     writeToDisk: true,
   },
   devtool: 'eval-source-map',
-  entry: './client/src/index.js',
+  entry: ['webpack-hot-middleware/client', './client/src/index.js'],
   mode: 'development',
   module: {
     rules: [
@@ -40,7 +41,11 @@ module.exports = {
       template: './client/index.html',
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new ReactRefreshWebpackPlugin(),
+    new ReactRefreshWebpackPlugin({
+      overlay: {
+        sockIntegration: 'whm',
+      },
+    }),
   ],
   stats: {
     colors: true,

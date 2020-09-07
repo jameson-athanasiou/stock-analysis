@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { capitalize } from 'lodash'
 import { Layout, Menu, Breadcrumb, PageHeader } from 'antd'
-import { ArrowLeftOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, DollarOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
 import { useLazyGet } from 'hooks/useApi'
 import { FIELDS } from 'constants'
 import Home from 'routes/Home'
+import Financials from 'routes/Financials'
 import Summary from 'routes/Summary'
 import Trends from 'routes/Trends'
+import { getTickerFromLocation } from 'util/location'
 
 const { Content, Sider } = Layout
 
@@ -26,7 +28,7 @@ const App = () => {
   const fields = fieldsToSelect.reduce((acc, curr) => `${acc},${FIELDS[curr]}`)
 
   const [location, setLocation] = useLocation()
-  const [ticker, setTicker] = useState('')
+  const [ticker, setTicker] = useState(getTickerFromLocation(location) || '')
   const [sector, setSector] = useState('Something software')
   const [tickerData, setTickerData] = useState({})
   const [collapsed, setCollapsed] = useState(true)
@@ -37,6 +39,10 @@ const App = () => {
       setTickerData(result)
     })
   }, [ticker])
+
+  if (!ticker) {
+    setLocation('/')
+  }
 
   const handleTickerUpdate = (selectedTicker) => setTicker(selectedTicker)
 
@@ -52,11 +58,29 @@ const App = () => {
       <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            <Menu.Item key="1" icon={<ProfileOutlined />} onClick={() => setLocation(`/${ticker}/summary`)}>
+            <Menu.Item
+              key="1"
+              icon={<ProfileOutlined />}
+              disabled={!ticker}
+              onClick={() => setLocation(`/${ticker}/summary`)}
+            >
               Summary
             </Menu.Item>
-            <Menu.Item key="2" icon={<LineChartOutlined />} onClick={() => setLocation(`/${ticker}/trends`)}>
+            <Menu.Item
+              key="2"
+              icon={<LineChartOutlined />}
+              disabled={!ticker}
+              onClick={() => setLocation(`/${ticker}/trends`)}
+            >
               Trends
+            </Menu.Item>
+            <Menu.Item
+              key="3"
+              icon={<DollarOutlined />}
+              disabled={!ticker}
+              onClick={() => setLocation(`/${ticker}/financials`)}
+            >
+              Financials
             </Menu.Item>
           </Menu>
         </Sider>
@@ -75,6 +99,7 @@ const App = () => {
               ))}
             </Breadcrumb>
             <Home handleTickerUpdate={handleTickerUpdate} />
+            <Financials data={tickerData} loading={loading} />
             <Summary data={tickerData} loading={loading} />
             <Trends data={tickerData} loading={loading} />
           </Content>

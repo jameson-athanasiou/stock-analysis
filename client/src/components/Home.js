@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Form, Input, Select, Typography, Upload } from 'antd'
-import { LineChartOutlined, ProfileOutlined, UploadOutlined } from '@ant-design/icons'
+import { DollarOutlined, LineChartOutlined, ProfileOutlined, UploadOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
 import { Transition } from 'react-transition-group'
 import { useGet, usePost } from 'hooks/useApi'
@@ -110,6 +110,12 @@ const Home = ({ handleTickerUpdate }) => {
               </Title>
               <Button type="primary" icon={<LineChartOutlined />} onClick={() => setLocation(`/${ticker}/trends`)}>
                 Go to trends
+              </Button>
+              <Title style={{ marginTop: '20px' }} level={4}>
+                Full financial breakdown
+              </Title>
+              <Button type="primary" icon={<DollarOutlined />} onClick={() => setLocation(`/${ticker}/financials`)}>
+                Go to financials
               </Button>
             </div>
           )}
