@@ -1,4 +1,5 @@
 const bodyParser = require('body-parser')
+const path = require('path')
 const fs = require('fs')
 const express = require('express')
 const fileUpload = require('express-fileupload')
@@ -6,6 +7,7 @@ const { startCase } = require('lodash')
 const readdirp = require('readdirp')
 const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
+const hotMiddleware = require('webpack-dev-middleware')
 const webpackConfig = require('../webpack.config.js')
 const getMorningstarData = require('./morningstar')
 
@@ -42,11 +44,18 @@ app.get('/availableTickers', async (req, res) => {
 
 app.get('/morningstar', async (req, res) => {
   const { ticker, fields } = req.query
-  const data = await getMorningstarData(ticker, fields)
+  let status = 200
 
-  if (data) {
-    res.status(200).send(data)
-  } else res.status(500).send()
+  try {
+    const data = await getMorningstarData(ticker, fields)
+    if (data) {
+      res.status(status).send(data)
+    } else res.status(500).send({ error: 'Something went wrong on the server' })
+  } catch (err) {
+    if (err.code === 'TICKER_MISSING') status = 500
+    else if (err.code === 'FILE_NOT_FOUND') status = 404
+    res.status(status).send({ error: err.message })
+  }
 })
 
 app.post('/add', (req, res) => {
@@ -69,8 +78,22 @@ app.post('/add', (req, res) => {
 
 const compiler = webpack(webpackConfig)
 app.use(
-  webpackMiddleware(compiler, {})
+  webpackMiddleware(compiler, {
+    publicPath: webpackConfig.output.publicPath,
+    writeToDisk: true,
+  })
 )
+
+// app.use(
+//   hotMiddleware(compiler, {
+//     path: `/__webpack_hmr`,
+//     heartbeat: 10 * 1000,
+//   })
+// )
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../dist/index.html'))
+})
 
 app.listen('3000', () => {
   console.log('Server started')
