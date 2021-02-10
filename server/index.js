@@ -10,6 +10,7 @@ const webpackMiddleware = require('webpack-dev-middleware')
 const hotMiddleware = require('webpack-dev-middleware')
 const webpackConfig = require('../webpack.config.js')
 const getMorningstarData = require('./morningstar')
+const { getPageData } = require('./access')
 
 const app = express()
 
@@ -90,6 +91,8 @@ app.use(
 //     heartbeat: 10 * 1000,
 //   })
 // )
+
+getPageData()
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../dist/index.html'))
