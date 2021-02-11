@@ -1,27 +1,26 @@
 const puppeteer = require('puppeteer')
-const HtmlTableToJson = require('html-table-to-json')
-const tableToJson = require('tabletojson').Tabletojson
 const { parseTable } = require('./parseMorningstarTable')
 
-const getPageData = async () => {
-  const url = 'http://financials.morningstar.com/ratios/r.html?ops=clear&t=MSFT&region=usa&culture=en-US'
+const getPageData = async (ticker) => {
+  const url = `http://financials.morningstar.com/ratios/r.html?ops=clear&t=${ticker}&region=usa&culture=en-US`
 
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(url)
   await page.waitForSelector('table')
-  const html = await page.evaluate(() => document.body.innerHTML)
-  //   console.log(html)
 
-  const [firstTableElement] = (await page.$$('table')) || []
-  const firstTableHtml = await page.evaluate((node) => node.outerHTML, firstTableElement)
+  const allTables = (await page.$$('table')) || []
+  const tableData = await Promise.all(
+    allTables.map(async (table) => {
+      const tableHtml = await page.evaluate((node) => node.outerHTML, table)
+      return parseTable(tableHtml)
+    })
+  )
 
-  //   console.log(firstTableHtml)
-  //   const jsonTables = HtmlTableToJson.parse(firstTableHtml).results
-  // const jsonTables = tableToJson.convert(firstTableHtml)
+  const result = tableData.reduce((acc, curr) => ({ ...acc, ...curr }), {})
+  // console.log(result)
 
-  const jsonTables = parseTable(firstTableHtml)
-  console.log(jsonTables)
+  return result
 }
 
 module.exports = { getPageData }

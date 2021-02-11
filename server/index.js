@@ -48,7 +48,13 @@ app.get('/morningstar', async (req, res) => {
   let status = 200
 
   try {
-    const data = await getMorningstarData(ticker, fields)
+    // const data = await getMorningstarData(ticker, fields)
+    if (!ticker) {
+      const tickerMissingError = new Error('Ticker not present')
+      tickerMissingError.code = 'TICKER_MISSING'
+      throw tickerMissingError
+    }
+    const data = await getPageData(ticker)
     if (data) {
       res.status(status).send(data)
     } else res.status(500).send({ error: 'Something went wrong on the server' })
@@ -92,7 +98,7 @@ app.use(
 //   })
 // )
 
-getPageData()
+// getPageData()
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../dist/index.html'))
