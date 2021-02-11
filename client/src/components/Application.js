@@ -35,16 +35,19 @@ const App = () => {
   const [getTickerData, { loading, error }] = useLazyGet('morningstar')
 
   useEffect(() => {
-    getTickerData({ ticker, fields }).then((result) => {
-      const formattedResults = Object.entries(result).reduce((acc, [metric, data]) => {
-        const [formattedMetric] = metric.replace(/\*/g, '').split('USD')
-        return {
-          ...acc,
-          [formattedMetric.trim()]: data,
-        }
-      }, {})
-      setTickerData(formattedResults)
-    })
+    getTickerData({ ticker, fields })
+      .then((result) => {
+        const formattedResults = Object.entries(result).reduce((acc, [metric, data]) => {
+          const [formattedMetric] = metric.replace(/\*/g, '').split('USD')
+          return {
+            ...acc,
+            [formattedMetric.trim()]: data,
+          }
+        }, {})
+
+        setTickerData(formattedResults)
+      })
+      .catch((e) => console.warn(e))
   }, [ticker])
 
   if (!ticker) {
