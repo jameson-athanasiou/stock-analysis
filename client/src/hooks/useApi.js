@@ -36,10 +36,11 @@ export const usePost = (route) => {
 }
 
 export const useLazyGet = (route) => {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
 
   const get = async (params = {}) => {
+    setLoading(true)
     const queryParams = Object.keys(params).length ? formatUrlParams(params) : ''
     const result = await axios.get(`/${route}${queryParams}`).catch((e) => {
       setError(e)

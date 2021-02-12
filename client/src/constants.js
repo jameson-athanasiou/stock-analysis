@@ -7,6 +7,9 @@ export const FIELDS = {
   NET_INCOME: 'Net Income',
   OPERATING_CASH_FLOW: 'Operating Cash Flow',
   REVENUE: 'Revenue',
+  RETURN_ON_ASSETS: 'Return on Assets %',
+  RETURN_ON_EQUITY: 'Return on Equity %',
+  RETURN_ON_INVESTED_CAPITAL: 'Return on Invested Capital %',
 }
 
 export const REMOTE_FIELDS = {

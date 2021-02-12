@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Input, Select, Typography } from 'antd'
 import { DollarOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
 import { Transition } from 'react-transition-group'
+import { useTickerContext } from 'context/Ticker/context'
 
 const { Option } = Select
 const { Search } = Input
@@ -18,9 +19,9 @@ const transitionStyles = {
 
 const Home = ({ availableTickers, handleTickerUpdate, tickerLoading }) => {
   const [, setLocation] = useLocation()
-  const [ticker, setTicker] = useState()
-
-  console.log({ availableTickers })
+  const {
+    tickerInfo: { ticker },
+  } = useTickerContext()
 
   return (
     <>
@@ -31,10 +32,7 @@ const Home = ({ availableTickers, handleTickerUpdate, tickerLoading }) => {
           enterButton="Search"
           size="large"
           loading={tickerLoading}
-          onSearch={(tickerInput) => {
-            setTicker(tickerInput)
-            handleTickerUpdate(tickerInput)
-          }}
+          onSearch={(tickerInput) => handleTickerUpdate(tickerInput)}
         />
         <br />
         <br />
@@ -45,10 +43,7 @@ const Home = ({ availableTickers, handleTickerUpdate, tickerLoading }) => {
             style={{ width: '100%' }}
             placeholder="Previously searched tickers"
             optionFilterProp="children"
-            onChange={(selectedTicker) => {
-              setTicker(selectedTicker)
-              handleTickerUpdate(selectedTicker)
-            }}
+            onChange={(selectedTicker) => handleTickerUpdate(selectedTicker)}
           >
             {availableTickers.map((name, index) => (
               <Option key={name} value={availableTickers[index]}>
@@ -58,7 +53,7 @@ const Home = ({ availableTickers, handleTickerUpdate, tickerLoading }) => {
           </Select>
         ) : null}
       </div>
-      {ticker ? (
+      {ticker && !tickerLoading ? (
         <Transition appear in={!!ticker} timeout={1000}>
           {(state) => (
             <div

@@ -1,7 +1,6 @@
 const bodyParser = require('body-parser')
 const path = require('path')
 const express = require('express')
-const fileUpload = require('express-fileupload')
 const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
 const webpackConfig = require('../webpack.config.js')
@@ -10,7 +9,6 @@ const { getPageData } = require('./access')
 const app = express()
 
 app.use(bodyParser.json())
-app.use(fileUpload())
 
 app.get('/morningstar', async (req, res) => {
   const { ticker } = req.query

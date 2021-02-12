@@ -7,7 +7,7 @@ const getPageData = async (ticker) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(url)
-  await page.waitForSelector('table:nth-of-type(2)')
+  await page.waitForSelector('table:nth-of-type(2)', { timeout: 5000 })
 
   const allTables = (await page.$$('table')) || []
   const tableData = await Promise.all(
