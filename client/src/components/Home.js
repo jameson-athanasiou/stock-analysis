@@ -1,32 +1,13 @@
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, Input, Select, Typography, Upload } from 'antd'
-import { DollarOutlined, LineChartOutlined, ProfileOutlined, UploadOutlined } from '@ant-design/icons'
+import { Button, Input, Select, Typography } from 'antd'
+import { DollarOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
 import { Transition } from 'react-transition-group'
-import { useGet, usePost } from 'hooks/useApi'
 
 const { Option } = Select
+const { Search } = Input
 const { Title } = Typography
-
-const onFinishFailed = (errorInfo) => {
-  console.log('Failed:', errorInfo)
-}
-
-// const tickers = [
-//   {
-//     name: 'Waste Management',
-//     symbol: 'WM',
-//   },
-//   {
-//     name: 'Sysco',
-//     symbol: 'SYY',
-//   },
-//   {
-//     name: 'Microsoft',
-//     symbol: 'MSFT',
-//   },
-// ]
 
 const transitionStyles = {
   entering: { opacity: 1 },
@@ -35,58 +16,49 @@ const transitionStyles = {
   exited: { opacity: 0 },
 }
 
-const layout = {
-  labelCol: {
-    span: 4,
-  },
-  wrapperCol: {
-    span: 16,
-  },
-}
-
-const Home = ({ handleTickerUpdate }) => {
+const Home = ({ availableTickers, handleTickerUpdate, tickerLoading }) => {
   const [, setLocation] = useLocation()
   const [ticker, setTicker] = useState()
-  const [uploadInfo, setUploadInfo] = useState({})
-  const { data: availableTickers, loading } = useGet('availableTickers')
-  console.log(availableTickers)
-  const [upload] = usePost('add')
 
-  const onFinish = (values) => {
-    console.log('Success:', values)
-    const formData = new FormData()
-    Object.entries(values).forEach(([field, value]) => formData.append(field, value))
-    formData.append('file', uploadInfo.file)
-    upload(formData)
-  }
-
-  if (loading) return null
+  console.log({ availableTickers })
 
   return (
     <>
       <Title level={3}>Pick a stock!</Title>
-      <Select
-        showSearch
-        style={{ width: '100%' }}
-        placeholder="Select a ticker"
-        optionFilterProp="children"
-        onChange={(selectedTicker) => {
-          setTicker(selectedTicker)
-          if (selectedTicker !== 'other') {
-            handleTickerUpdate(selectedTicker)
-          }
-        }}
-      >
-        {availableTickers.fullNames.map((name, index) => (
-          <Option key={name} value={availableTickers.tickers[index]}>
-            {name}
-          </Option>
-        ))}
-        <Option key="other" value="other">
-          {"The company I want isn't here! (Other)"}
-        </Option>
-      </Select>
-      {ticker && ticker !== 'other' ? (
+      <div style={{ maxWidth: '400px' }}>
+        <Search
+          placeholder="Enter a ticker"
+          enterButton="Search"
+          size="large"
+          loading={tickerLoading}
+          onSearch={(tickerInput) => {
+            setTicker(tickerInput)
+            handleTickerUpdate(tickerInput)
+          }}
+        />
+        <br />
+        <br />
+        {availableTickers.length ? (
+          <Select
+            autoClearSearchValue={false}
+            showSearch
+            style={{ width: '100%' }}
+            placeholder="Previously searched tickers"
+            optionFilterProp="children"
+            onChange={(selectedTicker) => {
+              setTicker(selectedTicker)
+              handleTickerUpdate(selectedTicker)
+            }}
+          >
+            {availableTickers.map((name, index) => (
+              <Option key={name} value={availableTickers[index]}>
+                {name}
+              </Option>
+            ))}
+          </Select>
+        ) : null}
+      </div>
+      {ticker ? (
         <Transition appear in={!!ticker} timeout={1000}>
           {(state) => (
             <div
@@ -121,61 +93,14 @@ const Home = ({ handleTickerUpdate }) => {
           )}
         </Transition>
       ) : null}
-      {ticker === 'other' ? (
-        <>
-          <Title style={{ marginTop: '50px' }} level={3}>
-            {"Let's add a company!"}
-          </Title>
-          <Form name="New Ticker" {...layout} onFinish={onFinish} onFinishFailed={onFinishFailed}>
-            {[
-              ['Ticker', 'ticker'],
-              ['Name', 'name'],
-              ['Sector', 'sector'],
-              ['Industry', 'industry'],
-            ].map(([displayName, fieldName]) => (
-              <Fragment key={displayName}>
-                <Form.Item
-                  label={displayName}
-                  name={fieldName}
-                  rules={[{ required: true, message: `${displayName} is required.` }]}
-                >
-                  <Input />
-                </Form.Item>
-              </Fragment>
-            ))}
-            <Form.Item
-              name="upload"
-              label="Upload"
-              valuePropName="file"
-              rules={[{ required: true, message: 'You must pick a file.' }]}
-            >
-              <Upload
-                action="/add"
-                name="file"
-                beforeUpload={(file) => {
-                  setUploadInfo((prev) => ({ ...prev, file }))
-                  return false
-                }}
-              >
-                <Button>
-                  <UploadOutlined /> Pick a file
-                </Button>
-              </Upload>
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" style={{ marginTop: 16 }} htmlType="submit">
-                {'Start Upload'}
-              </Button>
-            </Form.Item>
-          </Form>
-        </>
-      ) : null}
     </>
   )
 }
 
 Home.propTypes = {
+  availableTickers: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleTickerUpdate: PropTypes.func.isRequired,
+  tickerLoading: PropTypes.bool,
 }
 
 export default Home

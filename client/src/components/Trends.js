@@ -11,8 +11,6 @@ const Trends = ({ data, loading }) => {
   if (loading || isEmpty(data)) return null
 
   const dataPoints = [FREE_CASH_FLOW, NET_INCOME, REVENUE, OPERATING_CASH_FLOW]
-
-  debugger
   const chartData = useMemo(
     () =>
       Object.keys(data[dataPoints[0]] || {})

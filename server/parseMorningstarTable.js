@@ -39,8 +39,6 @@ const parseTable = (html) => {
     )
 
   return rows
-  // STATUS: I think the rows var currentl aligns with what is coming back from the csv formatter right now
-  // Need to parse the other tables on the page and try to get this bad boy hooked into the client
 }
 
 module.exports = { parseTable }
