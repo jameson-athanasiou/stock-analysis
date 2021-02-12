@@ -7,7 +7,7 @@ const getPageData = async (ticker) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(url)
-  await page.waitForSelector('table')
+  await page.waitForSelector('table:nth-of-type(2)')
 
   const allTables = (await page.$$('table')) || []
   const tableData = await Promise.all(
@@ -18,8 +18,6 @@ const getPageData = async (ticker) => {
   )
 
   const result = tableData.reduce((acc, curr) => ({ ...acc, ...curr }), {})
-  // console.log(result)
-
   return result
 }
 

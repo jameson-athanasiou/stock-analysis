@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { capitalize } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import { capitalize, uniq } from 'lodash'
 import { Layout, Menu, Breadcrumb, PageHeader } from 'antd'
 import { ArrowLeftOutlined, DollarOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
 import { useLocation } from 'wouter'
 import { useLazyGet } from 'hooks/useApi'
-import { REMOTE_FIELDS } from 'constants'
 import Home from 'routes/Home'
 import Financials from 'routes/Financials'
 import Summary from 'routes/Summary'
@@ -13,29 +12,17 @@ import { getTickerFromLocation } from 'util/location'
 
 const { Content, Sider } = Layout
 
-const fieldsToSelect = [
-  'BOOK_VALUE_PER_SHARE',
-  'DIVIDENDS',
-  'EPS',
-  'FREE_CASH_FLOW',
-  'FREE_CASH_FLOW_PER_SHARE',
-  'NET_INCOME',
-  'OPERATING_CASH_FLOW',
-  'REVENUE',
-]
-
 const App = () => {
-  const fields = fieldsToSelect.reduce((acc, curr) => `${acc},${REMOTE_FIELDS[curr]}`)
-
   const [location, setLocation] = useLocation()
   const [ticker, setTicker] = useState(getTickerFromLocation(location) || '')
   const [sector, setSector] = useState('')
   const [tickerData, setTickerData] = useState({})
   const [collapsed, setCollapsed] = useState(true)
+  const [fetchedTickers, setFetchedTickers] = useState([])
   const [getTickerData, { loading, error }] = useLazyGet('morningstar')
 
   useEffect(() => {
-    getTickerData({ ticker, fields })
+    getTickerData({ ticker })
       .then((result) => {
         const formattedResults = Object.entries(result).reduce((acc, [metric, data]) => {
           const [formattedMetric] = metric.replace(/\*/g, '').split('USD')
@@ -46,6 +33,7 @@ const App = () => {
         }, {})
 
         setTickerData(formattedResults)
+        setFetchedTickers((prevState) => uniq([...prevState, ticker]))
       })
       .catch((e) => console.warn(e))
   }, [ticker])
@@ -108,7 +96,7 @@ const App = () => {
                 <Breadcrumb.Item key={item}>{item}</Breadcrumb.Item>
               ))}
             </Breadcrumb>
-            <Home handleTickerUpdate={handleTickerUpdate} />
+            <Home handleTickerUpdate={handleTickerUpdate} availableTickers={fetchedTickers} tickerLoading={loading} />
             <Financials data={tickerData} loading={loading} />
             <Summary data={tickerData} loading={loading} />
             <Trends data={tickerData} loading={loading} />
