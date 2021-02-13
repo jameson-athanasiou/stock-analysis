@@ -1,7 +1,7 @@
 export const FIELDS = {
   BOOK_VALUE_PER_SHARE: 'Book Value Per Share',
   DIVIDENDS: 'Dividends',
-  EPS: 'Earnings Per Share',
+  EARNINGS_PER_SHARE: 'Earnings Per Share',
   FREE_CASH_FLOW: 'Free Cash Flow',
   FREE_CASH_FLOW_PER_SHARE: 'Free Cash Flow Per Share',
   NET_INCOME: 'Net Income',

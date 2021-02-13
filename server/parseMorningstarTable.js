@@ -2,7 +2,7 @@ const { parse } = require('node-html-parser')
 const { mapKeys, omit } = require('lodash')
 
 const badFields = ['Revenue', 'Total Assets', 'Total Liabilities & Equity']
-const badPatterns = [/\*/, 'USD Mil']
+const badPatterns = [/\*/, /mil/, 'USD']
 
 const parseTable = (html) => {
   const table = parse(html)
@@ -47,7 +47,7 @@ const parseTable = (html) => {
   const formattedData = mapKeys(validFields, (value, key) => {
     let formattedKey = key
     badPatterns.forEach((pattern) => {
-      const reg = new RegExp(pattern, 'g')
+      const reg = new RegExp(pattern, 'gi')
       formattedKey = formattedKey.replace(reg, '')
     })
     return formattedKey.trim()
