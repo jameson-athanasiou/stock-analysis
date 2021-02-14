@@ -28,8 +28,7 @@ module.exports = {
     'no-unused-vars': [
       1,
       {
-        ignoreSiblings: true,
-        argsIgnorePattern: 'React|res|next|^err',
+        varsIgnorePattern: 'React|res|next|^err',
       },
     ],
     'prefer-const': [

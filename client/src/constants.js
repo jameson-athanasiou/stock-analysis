@@ -1,12 +1,15 @@
 export const FIELDS = {
   BOOK_VALUE_PER_SHARE: 'Book Value Per Share',
   DIVIDENDS: 'Dividends',
-  EPS: 'Earnings Per Share',
+  EARNINGS_PER_SHARE: 'Earnings Per Share',
   FREE_CASH_FLOW: 'Free Cash Flow',
   FREE_CASH_FLOW_PER_SHARE: 'Free Cash Flow Per Share',
   NET_INCOME: 'Net Income',
   OPERATING_CASH_FLOW: 'Operating Cash Flow',
   REVENUE: 'Revenue',
+  RETURN_ON_ASSETS: 'Return on Assets %',
+  RETURN_ON_EQUITY: 'Return on Equity %',
+  RETURN_ON_INVESTED_CAPITAL: 'Return on Invested Capital %',
 }
 
 export const REMOTE_FIELDS = {
