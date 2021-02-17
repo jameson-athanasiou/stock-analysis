@@ -6,6 +6,8 @@ const webpackMiddleware = require('webpack-dev-middleware')
 const webpackConfig = require('../webpack.config.js')
 const { getPageData } = require('./access')
 
+const isProd = process.env.NODE_ENV === 'production'
+
 const app = express()
 
 app.use(bodyParser.json())
@@ -31,13 +33,15 @@ app.get('/morningstar', async (req, res) => {
   }
 })
 
-const compiler = webpack(webpackConfig)
-app.use(
-  webpackMiddleware(compiler, {
-    publicPath: webpackConfig.output.publicPath,
-    writeToDisk: true,
-  })
-)
+if (!isProd){
+  const compiler = webpack(webpackConfig)
+  app.use(
+    webpackMiddleware(compiler, {
+      publicPath: webpackConfig.output.publicPath,
+      writeToDisk: true,
+    })
+  )
+}
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../dist/index.html'))
