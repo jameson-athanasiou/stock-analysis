@@ -1,7 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+// const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 module.exports = {
   devServer: {
@@ -41,11 +41,11 @@ module.exports = {
       template: './client/index.html',
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new ReactRefreshWebpackPlugin({
-      overlay: {
-        sockIntegration: 'whm',
-      },
-    }),
+//     new ReactRefreshWebpackPlugin({
+//       overlay: {
+//         sockIntegration: 'whm',
+//       },
+//     }),
   ],
   stats: {
     colors: true,
