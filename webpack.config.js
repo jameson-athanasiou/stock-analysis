@@ -51,5 +51,5 @@ module.exports = {
     colors: true,
     entrypoints: true,
   },
-  watch: true,
+//   watch: true,
 }
