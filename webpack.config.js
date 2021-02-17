@@ -25,7 +25,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             babelrc: true,
-            plugins: [require.resolve('react-refresh/babel')],
+//             plugins: [require.resolve('react-refresh/babel')],
           },
         },
       },
