@@ -1,9 +1,9 @@
 const bodyParser = require('body-parser')
 const path = require('path')
 const express = require('express')
-const webpack = require('webpack')
-const webpackMiddleware = require('webpack-dev-middleware')
-const webpackConfig = require('../webpack.config.js')
+// const webpack = require('webpack')
+// const webpackMiddleware = require('webpack-dev-middleware')
+// const webpackConfig = require('../webpack.config.js')
 const { getPageData } = require('./access')
 
 const isProd = process.env.NODE_ENV === 'production'
