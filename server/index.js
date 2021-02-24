@@ -33,21 +33,21 @@ app.get('/morningstar', async (req, res) => {
   }
 })
 
-if (!isProd){
-  const compiler = webpack(webpackConfig)
-  app.use(
-    webpackMiddleware(compiler, {
-      publicPath: webpackConfig.output.publicPath,
-      writeToDisk: true,
-    })
-  )
-}
+// if (!isProd){
+//   const compiler = webpack(webpackConfig)
+//   app.use(
+//     webpackMiddleware(compiler, {
+//       publicPath: webpackConfig.output.publicPath,
+//       writeToDisk: true,
+//     })
+//   )
+// }
 
-app.use(express.static(path.join(__dirname, './dist')))
+app.use(express.static(path.join(__dirname, '../dist')))
 
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../dist/index.html'))
-})
+// app.get('/', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, '../dist/index.html'))
+// })
 
 const PORT = process.env.PORT || '3000'
 
