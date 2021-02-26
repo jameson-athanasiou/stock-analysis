@@ -4,7 +4,7 @@ const { parseTable } = require('./parseMorningstarTable')
 const getPageData = async (ticker) => {
   const url = `http://financials.morningstar.com/ratios/r.html?ops=clear&t=${ticker}&region=usa&culture=en-US`
 
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
   const page = await browser.newPage()
   await page.goto(url)
   await page.waitForSelector('table:nth-of-type(2)', { timeout: 5000 })
