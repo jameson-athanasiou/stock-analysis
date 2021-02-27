@@ -1,17 +1,23 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-// const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
+const prodConfig = require('./webpack.config.prod')
+const devConfig = require('./webpack.config.dev')
+
+const isProd = process.env.NODE_ENV === 'production'
+const config = isProd ? prodConfig : devConfig
+
+const plugins = [
+  new HtmlWebpackPlugin({
+    template: './client/index.html',
+  }),
+  new LodashModuleReplacementPlugin(),
+]
+
+if (!isProd) plugins.push(new webpack.HotModuleReplacementPlugin())
 
 module.exports = {
-  devServer: {
-    inline: true,
-    hot: true,
-    writeToDisk: true,
-  },
-  devtool: 'eval-source-map',
-  entry: ['webpack-hot-middleware/client', './client/src/index.js'],
-  mode: 'development',
   module: {
     rules: [
       {
@@ -25,7 +31,6 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             babelrc: true,
-//             plugins: [require.resolve('react-refresh/babel')],
           },
         },
       },
@@ -36,20 +41,10 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './client/index.html',
-    }),
-    new webpack.HotModuleReplacementPlugin(),
-//     new ReactRefreshWebpackPlugin({
-//       overlay: {
-//         sockIntegration: 'whm',
-//       },
-//     }),
-  ],
+  plugins,
   stats: {
     colors: true,
     entrypoints: true,
   },
-//   watch: true,
+  ...config,
 }
