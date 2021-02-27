@@ -1,9 +1,7 @@
 const bodyParser = require('body-parser')
 const path = require('path')
 const express = require('express')
-// const webpack = require('webpack')
-// const webpackMiddleware = require('webpack-dev-middleware')
-// const webpackConfig = require('../webpack.config.js')
+
 const { getPageData } = require('./access')
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -33,24 +31,14 @@ app.get('/morningstar', async (req, res) => {
   }
 })
 
-// if (!isProd){
-//   const compiler = webpack(webpackConfig)
-//   app.use(
-//     webpackMiddleware(compiler, {
-//       publicPath: webpackConfig.output.publicPath,
-//       writeToDisk: true,
-//     })
-//   )
-// }
-
 app.use(express.static(path.join(__dirname, '../dist')))
-
-// app.get('/', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, '../dist/index.html'))
-// })
 
 const PORT = process.env.PORT || '3000'
 
+if (!isProd) {
+  require('./nonprod')(app) // eslint-disable-line
+}
+
 app.listen(PORT, () => {
-  console.log('Server started')
+  console.log(`Server started on port ${PORT}`)
 })
