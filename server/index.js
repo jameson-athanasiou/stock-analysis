@@ -1,8 +1,8 @@
 const bodyParser = require('body-parser')
 const path = require('path')
 const express = require('express')
-
 const { getPageData } = require('./access')
+const { getProjections } = require('./valuation/projections')
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -22,6 +22,7 @@ app.get('/morningstar', async (req, res) => {
     }
     const data = await getPageData(ticker)
     if (data) {
+      getProjections(data)
       res.status(status).send(data)
     } else res.status(500).send({ error: 'Something went wrong on the server' })
   } catch (err) {
