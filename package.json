@@ -5,6 +5,8 @@
   "main": "server/index.js",
   "scripts": {
     "build": "NODE_ENV=production webpack --config webpack.config.js --mode production",
+    "build-analyze": "NODE_ENV=production webpack --profile --json > stats.json && webpack-bundle-analyzer ./stats.json",
+    "build-dev": "NODE_ENV=development webpack --config webpack.config.js",
     "lint": "./node_modules/.bin/eslint --fix ./**/*.js",
     "start": "node server/index.js",
     "start:debug": "node --inspect-brk ./server/index.js",
@@ -37,6 +39,7 @@
     "react-refresh": "^0.9.0",
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^4.2.3",
+    "webpack-bundle-analyzer": "^4.4.0",
     "webpack-cli": "^3.3.12",
     "webpack-hot-middleware": "^2.25.0"
   },
