@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer')
-const { parseTable } = require('./parseMorningstarTable')
+const { parseTable } = require('./parseTable')
 
 const getPageData = async (ticker) => {
   const url = `http://financials.morningstar.com/ratios/r.html?ops=clear&t=${ticker}&region=usa&culture=en-US`

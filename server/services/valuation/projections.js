@@ -17,12 +17,22 @@ const getProjections = (financials) => {
     const projectedYears = yearValuePairs.map(([year]) => (yearValuePairs.length + parseInt(year)).toString())
     const projectedYearValuePairs = projectedYears.reduce((builtPairs, year, i) => {
       const [, previousValue] = i ? builtPairs[i - 1] : yearValuePairs[yearValuePairs.length - 1]
-      const newValue = previousValue * (1 * aagr)
+      const newValue = previousValue * (1 + aagr)
       return [...builtPairs, [year, parseInt(newValue)]]
     }, [])
 
-    debugger
-    return {}
+    const projectedData = projectedYearValuePairs.reduce(
+      (accumulatedValue, [year, value]) => ({
+        ...accumulatedValue,
+        [year]: value,
+      }),
+      {}
+    )
+
+    return {
+      ...acc,
+      [metric]: projectedData,
+    }
   }, {})
 
   return projections

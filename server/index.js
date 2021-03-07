@@ -1,8 +1,8 @@
 const bodyParser = require('body-parser')
 const path = require('path')
 const express = require('express')
-const { getPageData } = require('./access')
-const { getProjections } = require('./valuation/projections')
+const { getMorningstarData } = require('./services/morningstar')
+const { getProjections } = require('./services/valuation')
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -10,21 +10,13 @@ const app = express()
 
 app.use(bodyParser.json())
 
-app.get('/morningstar', async (req, res) => {
+app.get('/historical-data', async (req, res) => {
   const { ticker } = req.query
   let status = 200
 
   try {
-    if (!ticker) {
-      const tickerMissingError = new Error('Ticker not present')
-      tickerMissingError.code = 'TICKER_MISSING'
-      throw tickerMissingError
-    }
-    const data = await getPageData(ticker)
-    if (data) {
-      getProjections(data)
-      res.status(status).send(data)
-    } else res.status(500).send({ error: 'Something went wrong on the server' })
+    const data = await getMorningstarData(ticker)
+    res.status(status).send(data)
   } catch (err) {
     if (err.code === 'TICKER_MISSING') status = 500
     else if (err.code === 'FILE_NOT_FOUND') status = 404
@@ -32,7 +24,24 @@ app.get('/morningstar', async (req, res) => {
   }
 })
 
+app.get('/projections', async (req, res) => {
+  const { ticker } = req.query
+  const status = 200
+
+  try {
+    const morningstarData = await getMorningstarData(ticker)
+    const data = await getProjections(morningstarData)
+    res.status(status).send(data)
+  } catch (err) {
+    res.status(500).send({ error: err.message })
+  }
+})
+
 app.use(express.static(path.join(__dirname, '../dist')))
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'))
+})
 
 const PORT = process.env.PORT || '3000'
 
