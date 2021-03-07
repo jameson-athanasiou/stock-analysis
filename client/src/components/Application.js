@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { capitalize, uniq } from 'lodash'
 import { Layout, Menu, message, Breadcrumb, PageHeader } from 'antd'
-import { ArrowLeftOutlined, DollarOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons'
+import {
+  ArrowLeftOutlined,
+  DollarOutlined,
+  LineChartOutlined,
+  ProfileOutlined,
+  RocketOutlined,
+} from '@ant-design/icons'
 import { useLocation } from 'wouter'
 import { useLazyGet } from 'hooks/useApi'
 import Home from 'routes/Home'
 import Financials from 'routes/Financials'
 import Summary from 'routes/Summary'
 import Trends from 'routes/Trends'
+import Valuation from 'routes/Valuation'
 import { getTickerFromLocation } from 'util/location'
-import TickerContext from 'context/Ticker/context'
 import TickerProvider from 'context/Ticker/provider'
 
 const { Content, Sider } = Layout
@@ -21,7 +27,7 @@ const App = () => {
   const [tickerData, setTickerData] = useState({})
   const [collapsed, setCollapsed] = useState(true)
   const [fetchedTickers, setFetchedTickers] = useState([])
-  const [getTickerData, { loading, error }] = useLazyGet('morningstar')
+  const [getTickerData, { loading, error }] = useLazyGet('historical-data')
 
   useEffect(() => {
     if (ticker) {
@@ -92,6 +98,14 @@ const App = () => {
               >
                 Financials
               </Menu.Item>
+              <Menu.Item
+                key="4"
+                icon={<RocketOutlined />}
+                disabled={!ticker}
+                onClick={() => setLocation(`/${ticker}/valuation`)}
+              >
+                Valuation
+              </Menu.Item>
             </Menu>
           </Sider>
           <Layout className="site-layout">
@@ -112,6 +126,7 @@ const App = () => {
               <Financials data={tickerData} loading={loading} />
               <Summary data={tickerData} loading={loading} />
               <Trends data={tickerData} loading={loading} />
+              <Valuation data={tickerData} loading={loading} />
             </Content>
           </Layout>
         </Layout>
