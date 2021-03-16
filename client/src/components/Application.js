@@ -46,7 +46,9 @@ const App = () => {
           setTickerData(formattedResults)
           setFetchedTickers((prevState) => uniq([...prevState, ticker]))
           stopLoading()
-          message.success('Success!', 3)
+
+          if (result.error) message.error('Something went wrong', 5)
+          else message.success('Success!', 3)
         })
         .catch((e) => {
           console.warn(e)
