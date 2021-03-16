@@ -15,9 +15,9 @@
     "test": "test"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
+    "@babel/core": "^ 7.13.10",
     "@babel/plugin-transform-runtime": "^7.13.10",
-    "@babel/preset-env": "^7.12.16",
+    "@babel/preset-env": "^7.13.10",
     "@babel/preset-react": "^7.12.13",
     "babel-eslint": "^10.1.0",
     "babel-plugin-import": "^1.13.3",
@@ -25,7 +25,7 @@
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-recharts": "^1.2.1",
     "css-loader": "^4.2.2",
-    "eslint": "^7.19.0",
+    "eslint": "^7.22.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^6.10.1",
     "eslint-import-resolver-babel-module": "^5.2.0",
@@ -48,12 +48,12 @@
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
     "@react-hook/window-size": "^3.0.7",
-    "antd": "^4.12.3",
+    "antd": "^4.14.0",
     "axios": "^0.21.1",
     "babel-loader": "^8.2.2",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "node-html-parser": "^2.1.0",
     "prop-types": "^15.7.2",
     "puppeteer": "^7.1.0",
@@ -63,6 +63,6 @@
     "react-transition-group": "^4.4.1",
     "recharts": "^1.8.5",
     "tabletojson": "^2.0.4",
-    "wouter": "^2.7.3"
+    "wouter": "^2.7.4"
   }
 }

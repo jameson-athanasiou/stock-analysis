@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['airbnb/base', 'prettier', 'plugin:react/recommended'],
+  extends: ['airbnb/base', 'plugin:react/recommended', 'plugin:prettier/recommended'],
   parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2020,
