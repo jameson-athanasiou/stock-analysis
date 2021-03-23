@@ -3,6 +3,7 @@ const path = require('path')
 const express = require('express')
 const { getMorningstarData } = require('./services/morningstar')
 const { getProjections } = require('./services/valuation')
+const { getStatistics } = require('./services/stockAnalysis')
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -32,6 +33,18 @@ app.get('/projections', async (req, res) => {
     const morningstarData = await getMorningstarData(ticker)
     const data = await getProjections(morningstarData)
     res.status(status).send(data)
+  } catch (err) {
+    res.status(500).send({ error: err.message })
+  }
+})
+
+app.get('/statistics', async (req, res) => {
+  const { ticker } = req.query
+  const status = 200
+
+  try {
+    const stats = await getStatistics(ticker)
+    res.status(status).send(stats)
   } catch (err) {
     res.status(500).send({ error: err.message })
   }
