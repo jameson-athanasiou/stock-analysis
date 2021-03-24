@@ -14,7 +14,7 @@ const Valuation = () => {
   const { data, error, loading } = useGet('projections', { ticker })
   console.log(data)
 
-  const dataSource = Object.entries(data).map(([key, value], i) => {
+  const dataSource = Object.entries(data || {}).map(([key, value], i) => {
     const yearData = Object.entries(value).filter(([year]) => year !== 'TTM')
     const formattedValues = yearData.reduce(
       (acc, [currentYear, currentValue]) => ({
@@ -30,7 +30,25 @@ const Valuation = () => {
     }
   })
 
-  return (
+  const yearColumns = Object.keys(Object.entries(data || {})?.[0]?.[1] || {})
+    .filter((key) => key !== 'TTM')
+    .map((key) => ({
+      title: key,
+      dataIndex: key,
+      key: 'value',
+      editable: true,
+    }))
+
+  const columns = [
+    {
+      title: 'Metric',
+      dataIndex: 'metric',
+      key: 'metric',
+    },
+    ...yearColumns,
+  ]
+
+  return loading ? null : (
     <Table
       columns={columns}
       dataSource={dataSource}

@@ -33,7 +33,7 @@ const formatNumber = (value) => {
   return Number(removeAllButNumbersAndPeriods(value))
 }
 
-const getTable = (tableHtml, headerHtml) => {
+const getTable = (tableHtml, headerHtml, { withTitles }) => {
   const table = parse(tableHtml)
   const rows = table.querySelectorAll('tr')
 
@@ -49,19 +49,22 @@ const getTable = (tableHtml, headerHtml) => {
 
   const title = parse(headerHtml).text
 
-  return {
-    [title]: data,
-  }
+  if (withTitles)
+    return {
+      [title]: data,
+    }
+
+  return data
 }
 
-const mapResponse = async (page) => {
+const mapResponse = async (page, options) => {
   const allTables = (await page.$$('table')) || []
   const allHeaders = (await page.$$('h2')) || []
   const tableData = await Promise.all(
     allTables.map(async (table, index) => {
       const tableHtml = await page.evaluate((node) => node.outerHTML, table)
       const headerHtml = await page.evaluate((node) => node.outerHTML, allHeaders[index])
-      return getTable(tableHtml, headerHtml)
+      return getTable(tableHtml, headerHtml, options)
     })
   )
 

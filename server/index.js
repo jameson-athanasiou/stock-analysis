@@ -43,7 +43,7 @@ app.get('/statistics', async (req, res) => {
   const status = 200
 
   try {
-    const stats = await getStatistics(ticker)
+    const stats = await getStatistics(ticker, { withTitles: true })
     res.status(status).send(stats)
   } catch (err) {
     res.status(500).send({ error: err.message })

@@ -1,6 +1,9 @@
+const DCF_FIELDS = ['Revenue', 'Net Income', 'Earnings Per Share', 'Free Cash Flow']
+
 const getProjections = (financials) => {
   const projections = Object.entries(financials).reduce((acc, [metric, valuesByYear]) => {
-    console.log('')
+    if (!DCF_FIELDS.includes(metric)) return acc
+
     const yearValuePairs = Object.entries(valuesByYear).filter(([key]) => key !== 'TTM')
     const aagr =
       yearValuePairs.reduce((accumulatedValue, [, currentPeriod], index, arr) => {
