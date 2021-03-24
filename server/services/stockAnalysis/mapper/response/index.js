@@ -3,6 +3,8 @@ const { parse } = require('node-html-parser')
 const ONE_BILLION = 1000000000
 const ONE_MILLION = 1000000
 
+const badFields = ['Ex-Dividend Date']
+
 const removeAllButNumbersAndPeriods = (val) => val.replace(/[^.0-9]/g, '')
 
 const formatBillions = (value) => {
@@ -40,7 +42,7 @@ const getTable = (tableHtml, headerHtml) => {
     .reduce(
       (acc, [metric, value]) => ({
         ...acc,
-        [metric]: formatNumber(value),
+        ...(!badFields.includes(metric) && { [metric]: formatNumber(value) }),
       }),
       {}
     )

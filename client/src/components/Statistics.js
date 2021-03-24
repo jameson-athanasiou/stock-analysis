@@ -2,6 +2,7 @@ import React from 'react'
 import { Skeleton, Space, Table, Typography } from 'antd'
 import { useTickerContext } from 'context/Ticker/context'
 import { useGet } from 'hooks/useApi'
+import { formatBigNumberWithComma } from 'util/format'
 
 const Statistics = () => {
   const {
@@ -16,7 +17,7 @@ const Statistics = () => {
       Object.entries(category).map(([categoryTitle, categoryData]) => {
         const dataSource = Object.entries(categoryData).map(([metric, value], key) => ({
           metric,
-          value,
+          value: formatBigNumberWithComma(value),
           key,
         }))
 
