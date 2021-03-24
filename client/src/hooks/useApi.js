@@ -12,7 +12,13 @@ export const useGet = (route, params = {}) => {
   useEffect(() => {
     const get = async () => {
       const queryParams = Object.keys(params).length ? formatUrlParams(params) : ''
-      const result = await axios.get(`/${route}${queryParams}`).catch((e) => setError(e))
+      const result = await axios
+        .get(`/${route}${queryParams}`, {
+          headers: {
+            'Cache-Control': 'max-age=36000',
+          },
+        })
+        .catch((e) => setError(e))
       if (result && result.data) setData(result.data)
       setLoading(false)
     }

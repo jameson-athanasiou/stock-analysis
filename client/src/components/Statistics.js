@@ -1,32 +1,9 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Skeleton, Space, Table, Typography } from 'antd'
 import { useTickerContext } from 'context/Ticker/context'
 import { useGet } from 'hooks/useApi'
 
 const Statistics = () => {
-  //   const dataSource = Object.entries(data).map(([key, value], i) => {
-  //     const ttm = value.TTM
-  //     const formattedTTM = ttm ? ttm.toString().replace(/(?<=\d)(?=(\d\d\d)+(?!\d))/, ',') : '--'
-  //     return {
-  //       key: i,
-  //       metric: key,
-  //       ttm: formattedTTM,
-  //     }
-  //   })
-
-  //   const columns = [
-  //     {
-  //       title: 'Metric',
-  //       dataIndex: 'metric',
-  //       key: 'metric',
-  //     },
-  //     {
-  //       title: 'TTM',
-  //       dataIndex: 'ttm',
-  //       key: 'ttm',
-  //     },
-  //   ]
-
   const {
     tickerInfo: { ticker },
   } = useTickerContext()
@@ -34,7 +11,42 @@ const Statistics = () => {
   const { data, error, loading } = useGet('statistics', { ticker })
   console.log(data)
 
-  return 'statistics'
+  const getTables = () =>
+    data.map((category) =>
+      Object.entries(category).map(([categoryTitle, categoryData]) => {
+        const dataSource = Object.entries(categoryData).map(([metric, value], key) => ({
+          metric,
+          value,
+          key,
+        }))
+
+        const columns = [
+          {
+            title: 'metric',
+            dataIndex: 'metric',
+          },
+          {
+            title: 'value',
+            dataIndex: 'value',
+            fixed: 'right',
+          },
+        ]
+
+        return (
+          <Table
+            tableLayout="fixed"
+            columns={columns}
+            pagination={false}
+            showHeader={false}
+            dataSource={dataSource}
+            title={() => <Typography.Title level={3}>{categoryTitle}</Typography.Title>}
+            key={categoryTitle}
+          ></Table>
+        )
+      })
+    )
+
+  return loading ? <Skeleton active title paragraph={{ rows: 2 }} /> : <Space direction="vertical">{getTables()}</Space>
 }
 
 export default Statistics
