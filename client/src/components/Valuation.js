@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import React, { useEffect, useState, useMemo } from 'react'
+import { Input, Table } from 'antd'
+import { isEmpty, cloneDeep } from 'lodash'
 import { useTickerContext } from 'context/Ticker/context'
 import { useGet } from 'hooks/useApi'
 import { isMobile } from 'util/browser'
@@ -12,23 +12,32 @@ const Valuation = () => {
   } = useTickerContext()
   const screenWidth = useWindowWidth({ leading: true })
   const { data, error, loading } = useGet('projections', { ticker })
-  console.log(data)
 
-  const dataSource = Object.entries(data || {}).map(([key, value], i) => {
-    const yearData = Object.entries(value).filter(([year]) => year !== 'TTM')
-    const formattedValues = yearData.reduce(
-      (acc, [currentYear, currentValue]) => ({
-        ...acc,
-        [currentYear]: currentValue,
+  const [valuationData, setValuationData] = useState({})
+
+  const dataSource = useMemo(
+    () =>
+      Object.entries(data || {}).map(([key, value], i) => {
+        const yearData = Object.entries(value).filter(([year]) => year !== 'TTM')
+        const formattedValues = yearData.reduce(
+          (acc, [currentYear, currentValue]) => ({
+            ...acc,
+            [currentYear]: currentValue,
+          }),
+          {}
+        )
+        return {
+          key: i,
+          metric: key,
+          ...formattedValues,
+        }
       }),
-      {}
-    )
-    return {
-      key: i,
-      metric: key,
-      ...formattedValues,
-    }
-  })
+    [data]
+  )
+
+  useEffect(() => {
+    setValuationData(dataSource)
+  }, [dataSource])
 
   const yearColumns = Object.keys(Object.entries(data || {})?.[0]?.[1] || {})
     .filter((key) => key !== 'TTM')
@@ -37,6 +46,25 @@ const Valuation = () => {
       dataIndex: key,
       key: 'value',
       editable: true,
+      align: 'center',
+      render: (val, _, index) => {
+        const id = `${valuationData[index].metric}-${key}`
+        return (
+          <div id={id} style={{ width: '100px' }}>
+            <Input
+              allowClear
+              bordered
+              size="large"
+              onChange={({ target: { value } }) => {
+                const updatedData = cloneDeep(valuationData)
+                updatedData[index][key] = Number(value)
+                setValuationData(updatedData)
+              }}
+              value={String(val)}
+            />
+          </div>
+        )
+      },
     }))
 
   const columns = [
@@ -51,8 +79,8 @@ const Valuation = () => {
   return loading ? null : (
     <Table
       columns={columns}
-      dataSource={dataSource}
-      loading={loading}
+      dataSource={valuationData}
+      loading={loading || isEmpty(valuationData)}
       pagination={false}
       scroll={{ x: true }}
       size={isMobile(screenWidth) ? 'small' : 'default'}
