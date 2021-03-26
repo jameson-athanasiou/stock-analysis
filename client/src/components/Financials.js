@@ -6,6 +6,7 @@ import { useWindowWidth } from '@react-hook/window-size'
 import Chart from 'components/Chart'
 import { isMobile } from 'util/browser'
 import { averageAnnualGrowthRate } from 'util/finance'
+import { formatBigNumberWithComma } from 'util/format'
 
 const Financials = ({ data, loading }) => {
   console.log(data)
@@ -32,7 +33,7 @@ const Financials = ({ data, loading }) => {
     const formattedValues = yearData.reduce(
       (acc, [currentYear, currentValue]) => ({
         ...acc,
-        [currentYear]: currentValue ? currentValue.toString().replace(/(?<=\d)(?=(\d\d\d)+(?!\d))/, ',') : '--',
+        [currentYear]: formatBigNumberWithComma(currentValue),
       }),
       {}
     )
