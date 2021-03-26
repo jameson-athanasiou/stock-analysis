@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import { formatBigNumberWithComma } from 'util/format'
 
 const Summary = ({ data, loading }) => {
   const dataSource = Object.entries(data).map(([key, value], i) => {
     const ttm = value.TTM
-    const formattedTTM = ttm ? ttm.toString().replace(/(?<=\d)(?=(\d\d\d)+(?!\d))/, ',') : '--'
+    const formattedTTM = formatBigNumberWithComma(ttm)
     return {
       key: i,
       metric: key,

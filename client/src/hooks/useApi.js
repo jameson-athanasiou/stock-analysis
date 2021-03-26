@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import Cache from 'util/cache'
+
+const requestCache = new Cache()
 
 const formatUrlParams = (params) =>
   Object.entries(params).reduce((acc, [key, value], i) => `${acc}${!i ? '' : '&'}${key}=${value}`, '?')
@@ -12,8 +15,17 @@ export const useGet = (route, params = {}) => {
   useEffect(() => {
     const get = async () => {
       const queryParams = Object.keys(params).length ? formatUrlParams(params) : ''
-      const result = await axios.get(`/${route}${queryParams}`).catch((e) => setError(e))
-      if (result && result.data) setData(result.data)
+      const url = `/${route}${queryParams}`
+
+      const cachedRequest = requestCache.getRequest(url)
+      if (cachedRequest) setData(cachedRequest)
+      else {
+        const result = await axios.get(`/${route}${queryParams}`).catch((e) => setError(e))
+        const response = result?.data
+
+        setData(response)
+        if (response) requestCache.addRequest(url, response)
+      }
       setLoading(false)
     }
     get()

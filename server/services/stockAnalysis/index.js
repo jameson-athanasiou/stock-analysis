@@ -1,13 +1,13 @@
-const { getPageData } = require('./access')
+const { getStatistics: getStats } = require('./access')
 
-const getMorningstarData = async (ticker) => {
+const getStatistics = async (ticker) => {
   if (!ticker) {
     const tickerMissingError = new Error('Ticker not present')
     tickerMissingError.code = 'TICKER_MISSING'
     throw tickerMissingError
   }
 
-  const data = await getPageData(ticker)
+  const data = await getStats(ticker)
 
   if (data) {
     return data
@@ -16,4 +16,4 @@ const getMorningstarData = async (ticker) => {
   throw new Error('Data not available')
 }
 
-module.exports = { getMorningstarData }
+module.exports = { getStatistics }
