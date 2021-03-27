@@ -1,3 +1,4 @@
 const { getProjections } = require('./projections')
+const { discountedCashFlow } = require('./valuation')
 
-module.exports = { getProjections }
+module.exports = { discountedCashFlow, getProjections }

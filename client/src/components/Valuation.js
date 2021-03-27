@@ -1,23 +1,34 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import { Input, Table } from 'antd'
+import React, { useCallback, useEffect, useState, useMemo } from 'react'
+import { Button, Space, Input, Table } from 'antd'
 import { isEmpty, cloneDeep } from 'lodash'
 import { useTickerContext } from 'context/Ticker/context'
-import { useGet } from 'hooks/useApi'
+import { useGet, usePost } from 'hooks/useApi'
 import { isMobile } from 'util/browser'
 import { useWindowWidth } from '@react-hook/window-size'
+
+const mapRequest = (data) =>
+  data.reduce((acc, metricData) => {
+    console.log(metricData)
+    const { metric, key, ...rest } = metricData
+    return {
+      ...acc,
+      [metric]: rest,
+    }
+  }, {})
 
 const Valuation = () => {
   const {
     tickerInfo: { ticker },
   } = useTickerContext()
   const screenWidth = useWindowWidth({ leading: true })
-  const { data, error, loading } = useGet('projections', { ticker })
+  const { data: projectionsData, loading: projectionsLoading } = useGet('projections', { ticker })
+  const [updateValuation, { data: valuationData, loading: valuationLoading }] = usePost('valuation')
 
-  const [valuationData, setValuationData] = useState({})
+  const [tableData, setTableData] = useState({})
 
   const dataSource = useMemo(
     () =>
-      Object.entries(data || {}).map(([key, value], i) => {
+      Object.entries(projectionsData || {}).map(([key, value], i) => {
         const yearData = Object.entries(value).filter(([year]) => year !== 'TTM')
         const formattedValues = yearData.reduce(
           (acc, [currentYear, currentValue]) => ({
@@ -32,14 +43,19 @@ const Valuation = () => {
           ...formattedValues,
         }
       }),
-    [data]
+    [projectionsData]
   )
 
+  const makeUpdates = useCallback(() => {
+    console.log(tableData)
+    updateValuation({ ticker, data: mapRequest(tableData) })
+  }, [tableData, ticker])
+
   useEffect(() => {
-    setValuationData(dataSource)
+    setTableData(dataSource)
   }, [dataSource])
 
-  const yearColumns = Object.keys(Object.entries(data || {})?.[0]?.[1] || {})
+  const yearColumns = Object.keys(Object.entries(projectionsData || {})?.[0]?.[1] || {})
     .filter((key) => key !== 'TTM')
     .map((key) => ({
       title: key,
@@ -48,7 +64,7 @@ const Valuation = () => {
       editable: true,
       align: 'center',
       render: (val, _, index) => {
-        const id = `${valuationData[index].metric}-${key}`
+        const id = `${tableData[index].metric}-${key}`
         return (
           <div id={id} style={{ width: '100px' }}>
             <Input
@@ -56,9 +72,9 @@ const Valuation = () => {
               bordered
               size="large"
               onChange={({ target: { value } }) => {
-                const updatedData = cloneDeep(valuationData)
+                const updatedData = cloneDeep(tableData)
                 updatedData[index][key] = Number(value)
-                setValuationData(updatedData)
+                setTableData(updatedData)
               }}
               value={String(val)}
             />
@@ -76,15 +92,20 @@ const Valuation = () => {
     ...yearColumns,
   ]
 
-  return loading ? null : (
-    <Table
-      columns={columns}
-      dataSource={valuationData}
-      loading={loading || isEmpty(valuationData)}
-      pagination={false}
-      scroll={{ x: true }}
-      size={isMobile(screenWidth) ? 'small' : 'default'}
-    />
+  return projectionsLoading ? null : (
+    <Space size="large" direction="vertical">
+      <Table
+        columns={columns}
+        dataSource={tableData}
+        loading={projectionsLoading || isEmpty(tableData)}
+        pagination={false}
+        scroll={{ x: true }}
+        size={isMobile(screenWidth) ? 'small' : 'default'}
+      />
+      <Button type="primary" onClick={() => makeUpdates()}>
+        Update Valuation
+      </Button>
+    </Space>
   )
 }
 

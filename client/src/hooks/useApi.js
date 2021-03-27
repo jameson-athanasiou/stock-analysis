@@ -37,14 +37,19 @@ export const useGet = (route, params = {}) => {
 export const usePost = (route) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState()
+  const [data, setData] = useState()
 
   const post = async (postData) => {
-    const result = axios.post(`/${route}`, postData).catch((e) => setError(e))
+    const result = axios.post(`/${route}`, postData).catch((e) => {
+      setError(e)
+      throw e
+    })
+    setData(result)
     setLoading(false)
     return result
   }
 
-  return [post, error, loading]
+  return [post, { data, error, loading }]
 }
 
 export const useLazyGet = (route) => {

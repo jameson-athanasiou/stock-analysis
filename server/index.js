@@ -2,7 +2,7 @@ const bodyParser = require('body-parser')
 const path = require('path')
 const express = require('express')
 const { getMorningstarData } = require('./services/morningstar')
-const { getProjections } = require('./services/valuation')
+const { discountedCashFlow, getProjections } = require('./services/valuation')
 const { getStatistics } = require('./services/stockAnalysis')
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -48,6 +48,10 @@ app.get('/statistics', async (req, res) => {
   } catch (err) {
     res.status(500).send({ error: err.message })
   }
+})
+
+app.post('/valuation', async (req, res) => {
+  const { ticker, data } = req.body
 })
 
 app.use(express.static(path.join(__dirname, '../dist')))

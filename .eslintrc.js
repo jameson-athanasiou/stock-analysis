@@ -28,6 +28,7 @@ module.exports = {
     'no-unused-vars': [
       1,
       {
+        ignoreRestSiblings: true,
         varsIgnorePattern: 'React|res|next|^err',
       },
     ],
