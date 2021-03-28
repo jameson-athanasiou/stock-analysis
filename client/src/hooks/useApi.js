@@ -35,11 +35,12 @@ export const useGet = (route, params = {}) => {
 }
 
 export const usePost = (route) => {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
   const [data, setData] = useState()
 
   const post = async (postData) => {
+    setLoading(true)
     const result = axios.post(`/${route}`, postData).catch((e) => {
       setError(e)
       throw e

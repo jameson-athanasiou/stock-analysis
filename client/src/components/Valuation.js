@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react'
-import { Button, Space, Input, Table } from 'antd'
+import { Button, Divider, Input, Table } from 'antd'
 import { isEmpty, cloneDeep } from 'lodash'
 import { useTickerContext } from 'context/Ticker/context'
 import { useGet, usePost } from 'hooks/useApi'
@@ -8,7 +8,6 @@ import { useWindowWidth } from '@react-hook/window-size'
 
 const mapRequest = (data) =>
   data.reduce((acc, metricData) => {
-    console.log(metricData)
     const { metric, key, ...rest } = metricData
     return {
       ...acc,
@@ -25,6 +24,10 @@ const Valuation = () => {
   const [updateValuation, { data: valuationData, loading: valuationLoading }] = usePost('valuation')
 
   const [tableData, setTableData] = useState({})
+  const [variables, setVariables] = useState({
+    discountRate: 0.1,
+    terminalGrowthRate: 0.02,
+  })
 
   const dataSource = useMemo(
     () =>
@@ -47,12 +50,18 @@ const Valuation = () => {
   )
 
   const makeUpdates = useCallback(() => {
-    console.log(tableData)
     updateValuation({ ticker, data: mapRequest(tableData) })
   }, [tableData, ticker])
 
   useEffect(() => {
-    setTableData(dataSource)
+    console.log(dataSource)
+    if (!isEmpty(dataSource)) {
+      const { metric, key, ...years } = dataSource.find((dataObj) => dataObj.metric === 'Free Cash Flow')
+
+      // const yearsWithTerminalValue = Object.entries(years).map(([year, val]) => )
+
+      setTableData(dataSource)
+    }
   }, [dataSource])
 
   const yearColumns = Object.keys(Object.entries(projectionsData || {})?.[0]?.[1] || {})
@@ -97,11 +106,32 @@ const Valuation = () => {
       title: 'Metric',
       dataIndex: 'metric',
       key: 'metric',
+      width: '10%',
     },
     {
       title: 'Value',
       dataIndex: 'value',
       key: 'value',
+      editable: true,
+      render: (val, { metric }) => {
+        const id = `${metric}-value`
+        return (
+          <div id={id} style={{ width: '100px' }}>
+            <Input
+              allowClear
+              bordered
+              size="large"
+              onChange={({ target: { value } }) => {
+                setVariables((previousVariables) => ({
+                  ...previousVariables,
+                  [metric]: value,
+                }))
+              }}
+              value={String(val)}
+            />
+          </div>
+        )
+      },
     },
   ]
 
@@ -109,30 +139,32 @@ const Valuation = () => {
     {
       key: 0,
       metric: 'terminalGrowthRate',
-      value: 0.02,
+      value: variables.terminalGrowthRate,
     },
     {
       key: 1,
       metric: 'discountRate',
-      value: 0.1,
+      value: variables.discountRate,
     },
   ]
 
   return projectionsLoading ? null : (
-    <Space size="large" direction="vertical">
-      <Table columns={variablesColumns} dataSource={variablesData} />
+    <>
+      <Table columns={variablesColumns} dataSource={variablesData} loading={valuationLoading} pagination={false} />
+      <Divider />
       <Table
         columns={projectionsColumns}
         dataSource={tableData}
-        loading={projectionsLoading || isEmpty(tableData)}
+        loading={projectionsLoading || valuationLoading || isEmpty(tableData)}
         pagination={false}
         scroll={{ x: true }}
         size={isMobile(screenWidth) ? 'small' : 'default'}
       />
+      <Divider />
       <Button type="primary" onClick={() => makeUpdates()}>
         Update Valuation
       </Button>
-    </Space>
+    </>
   )
 }
 
