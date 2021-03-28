@@ -83,7 +83,7 @@ const Valuation = () => {
       },
     }))
 
-  const columns = [
+  const projectionsColumns = [
     {
       title: 'Metric',
       dataIndex: 'metric',
@@ -92,10 +92,37 @@ const Valuation = () => {
     ...yearColumns,
   ]
 
+  const variablesColumns = [
+    {
+      title: 'Metric',
+      dataIndex: 'metric',
+      key: 'metric',
+    },
+    {
+      title: 'Value',
+      dataIndex: 'value',
+      key: 'value',
+    },
+  ]
+
+  const variablesData = [
+    {
+      key: 0,
+      metric: 'terminalGrowthRate',
+      value: 0.02,
+    },
+    {
+      key: 1,
+      metric: 'discountRate',
+      value: 0.1,
+    },
+  ]
+
   return projectionsLoading ? null : (
     <Space size="large" direction="vertical">
+      <Table columns={variablesColumns} dataSource={variablesData} />
       <Table
-        columns={columns}
+        columns={projectionsColumns}
         dataSource={tableData}
         loading={projectionsLoading || isEmpty(tableData)}
         pagination={false}
