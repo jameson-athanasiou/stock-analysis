@@ -6,58 +6,48 @@ import {
   LineChartOutlined,
   ProfileOutlined,
   RocketOutlined,
+  HomeOutlined,
+  MenuOutlined,
 } from '@ant-design/icons'
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Dropdown, Button } from 'antd'
 
-const { Sider } = Layout
+const { Item, SubMenu } = Menu
 
 const NavMenu = ({ ticker, setLocation }) => {
-  const [collapsed, setCollapsed] = useState(true)
+  const disableItems = !ticker
   return (
-    <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-        <Menu.Item
+    <Menu theme="dark" defaultSelectedKeys={['1']} mode="horizontal" selectable={false}>
+      <Item key="0" icon={<HomeOutlined />} disabled={false} onClick={() => setLocation(`/`)}>
+        Home
+      </Item>
+      <SubMenu key="SubMenu" icon={<DollarOutlined />} title="Financials" disabled={disableItems}>
+        <Item
           key="1"
           icon={<ProfileOutlined />}
-          disabled={!ticker}
+          disabled={disableItems}
           onClick={() => setLocation(`/${ticker}/summary`)}
         >
           Summary
-        </Menu.Item>
-        <Menu.Item
-          key="2"
-          icon={<LineChartOutlined />}
-          disabled={!ticker}
-          onClick={() => setLocation(`/${ticker}/trends`)}
-        >
-          Trends
-        </Menu.Item>
-        <Menu.Item
-          key="3"
-          icon={<DollarOutlined />}
-          disabled={!ticker}
-          onClick={() => setLocation(`/${ticker}/financials`)}
-        >
-          Financials
-        </Menu.Item>
-        <Menu.Item
-          key="4"
-          icon={<RocketOutlined />}
-          disabled={!ticker}
-          onClick={() => setLocation(`/${ticker}/valuation`)}
-        >
-          Valuation
-        </Menu.Item>
-        <Menu.Item
-          key="5"
-          icon={<CalculatorOutlined />}
-          disabled={!ticker}
-          onClick={() => setLocation(`/${ticker}/statistics`)}
-        >
+        </Item>
+        <Item key="2" disabled={disableItems} onClick={() => setLocation(`/${ticker}/financials`)}>
+          Details
+        </Item>
+        <Item key="3" disabled={disableItems} onClick={() => setLocation(`/${ticker}/statistics`)}>
           Statistics
-        </Menu.Item>
-      </Menu>
-    </Sider>
+        </Item>
+        <Item key="5" disabled={disableItems} onClick={() => setLocation(`/${ticker}/valuation`)}>
+          Valuation
+        </Item>
+      </SubMenu>
+      <Item
+        key="4"
+        icon={<LineChartOutlined />}
+        disabled={disableItems}
+        onClick={() => setLocation(`/${ticker}/trends`)}
+      >
+        Trends
+      </Item>
+    </Menu>
   )
 }
 
