@@ -60,6 +60,7 @@ const Financials = ({ data, loading }) => {
       title: 'Metric',
       dataIndex: 'metric',
       key: 'metric',
+      fixed: 'left',
     },
     ...yearColumns,
   ]
@@ -102,14 +103,15 @@ const Financials = ({ data, loading }) => {
         loading={loading}
         pagination={false}
         scroll={{ x: true }}
-        rowSelection={{
-          type: 'checkbox',
-          onChange: (selectedRowKeys, selected) => {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selected)
-            const rows = selected.map(({ metric }) => metric)
-            setSelectedRows(rows)
-          },
-        }}
+        sticky
+        // rowSelection={{
+        //   type: 'checkbox',
+        //   onChange: (selectedRowKeys, selected) => {
+        //     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selected)
+        //     const rows = selected.map(({ metric }) => metric)
+        //     setSelectedRows(rows)
+        //   },
+        // }}
         size={isMobile(screenWidth) ? 'small' : 'default'}
       />
       {selectedRows.length ? <Chart data={chartData} dataPoints={selectedRows} /> : null}

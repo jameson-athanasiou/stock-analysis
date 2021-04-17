@@ -69,15 +69,16 @@ const App = () => {
     <div className="App">
       <TickerProvider tickerInfo={{ ticker }}>
         <Layout style={{ minHeight: '100vh' }}>
-          <NavMenu ticker={ticker} setLocation={setLocation} />
           <Layout className="site-layout">
+            <NavMenu ticker={ticker} setLocation={setLocation} />
+
             <PageHeader
               className="site-page-header"
               title={ticker}
               subTitle={sector}
               backIcon={breadcrumbs.length > 1 ? <ArrowLeftOutlined /> : null}
               onBack={() => setLocation('/')}
-            />
+            ></PageHeader>
             <Content style={{ margin: '0 16px' }}>
               <Breadcrumb style={{ margin: '16px 0' }}>
                 {breadcrumbs.map((item) => (
