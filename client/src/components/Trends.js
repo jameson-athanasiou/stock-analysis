@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
-import { FIELDS } from 'constants'
+import { FIELDS } from 'util/constants'
 import { Divider, Typography } from 'antd'
 import Chart from 'components/Chart'
 
